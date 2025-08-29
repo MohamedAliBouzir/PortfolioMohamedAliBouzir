@@ -29,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning >
+    <html lang="en" suppressHydrationWarning className="no-scrollbar">
       <body className={`${geistMono.variable} ${caveat.variable} antialiased `}>
         <ThemeProvider
           attribute="class"
@@ -37,7 +37,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="sticky top-0 z-50 bg-background/80 backdrop-blur">
+          <div className="sticky top-0 z-50 bg-background/80 backdrop-blur ">
             <Header />
           </div>
           <PageWrapper>{children}</PageWrapper>

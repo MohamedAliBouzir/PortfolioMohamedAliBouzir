@@ -6,7 +6,7 @@ const PageWrapper = ({
   children: React.ReactNode;
 }>) => {
   return (
-    <main className="flex justify-center gap-4 ">
+    <main className="flex justify-center gap-4">
       <ProgressNav>
         <div className="w-4/5 md:w-3/5 h-full flex z-10">{children}</div>
       </ProgressNav>
