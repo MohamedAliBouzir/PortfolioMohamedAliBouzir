@@ -3,11 +3,11 @@
 import { motion, Transition } from "framer-motion";
 import { useEffect, useState } from "react"
 
-export default function Reordering() {
+export default function LoadingCubes() {
     const [order, setOrder] = useState(initialOrder)
 
     useEffect(() => {
-        const timeout = setTimeout(() => setOrder(shuffle(order)), 1000)
+        const timeout = setTimeout(() => setOrder(shuffle(order)), 250)
         return () => clearTimeout(timeout)
     }, [order])
 

@@ -6,6 +6,7 @@ import InformationsNumbers from "@/components/Home/InformationsNumbers";
 import Services from "@/components/Home/Services";
 import Technologies from "@/components/Home/Technologies";
 import Projects from "@/components/Home/projects";
+import LoadingCubes from "@/components/motions/LoadingCubes";
 
 export default function Home() {
   return (

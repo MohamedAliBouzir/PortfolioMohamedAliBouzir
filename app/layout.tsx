@@ -4,12 +4,12 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import { ThemeProvider } from "@/provider/theme-provider";
 import PageWrapper from "@/components/layout/PageWrapper";
-import { Caveat } from 'next/font/google';
+import { Caveat } from "next/font/google";
 
 const caveat = Caveat({
-  subsets: ['latin'],
-  weight: ['400', '600', '700'],
-  variable: '--font-caveat',
+  subsets: ["latin"],
+  weight: ["400", "600", "700"],
+  variable: "--font-caveat",
 });
 
 const geistMono = Geist_Mono({
