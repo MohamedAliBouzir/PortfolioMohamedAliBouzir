@@ -38,6 +38,12 @@ export default function Home() {
           Projects
         </h1>
       </section>
+      {/* <section className="relative flex flex-col items-center gap-8 justify-center xl:flex-row xl:items-center xl:justify-evenly">
+        <Projects />
+        <h1 className="whitespace-nowrap font-caveat absolute text-[18vw] font-extrabold text-black/5 z-0 select-none pointer-events-none leading-none bottom-[-10%]">
+          Experience
+        </h1>
+      </section> */}
     </div>
   );
 }
