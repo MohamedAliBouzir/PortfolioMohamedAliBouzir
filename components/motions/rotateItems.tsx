@@ -10,22 +10,17 @@ export default function RotateItem({ items }: { items: React.ReactNode[] }) {
 
   const itemWidth = 200;
   const gap = 20;
-  const visibleItemCount = 5;
+  const itemTotalWidth = itemWidth + gap;
 
-  const totalItems = visibleItemCount * 2;
-  const repeatedItems = Array.from(
-    { length: totalItems },
-    (_, i) => items[i % items.length]
-  );
-
-  const totalScrollWidth = totalItems * (itemWidth + gap);
-  const resetPoint = -totalScrollWidth / 2;
+  const repeatedItems = [...items, ...items]; // Duplicate full list
+  const totalScrollWidth = repeatedItems.length * itemTotalWidth;
+  const resetPoint = -1 * items.length * itemTotalWidth; // Reset after original items
 
   useAnimationFrame(() => {
     if (!isPaused) {
       const current = x.get();
       if (current <= resetPoint) {
-        x.set(0);
+        x.set(0); // Reset invisibly
       } else {
         x.set(current - animationSpeed);
       }
@@ -42,7 +37,7 @@ export default function RotateItem({ items }: { items: React.ReactNode[] }) {
         {repeatedItems.map((item, index) => (
           <li
             key={`item-${index}`}
-            className="flex-[0_0_200px] h-[180px] rounded-lg overflow-hidden group-[faza]:"
+            className="flex-[0_0_200px] h-[180px] rounded-lg overflow-hidden"
           >
             {item}
           </li>

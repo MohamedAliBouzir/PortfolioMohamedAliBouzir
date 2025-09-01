@@ -32,16 +32,9 @@ const initialOrder = [
     "#0d63f8",
 ]
 
-/**
- * ==============   Utils   ================
- */
 function shuffle([...array]: string[]) {
     return array.sort(() => Math.random() - 0.5)
 }
-
-/**
- * ==============   Styles   ================
- */
 
 const spring: Transition = {
     type: "spring",
