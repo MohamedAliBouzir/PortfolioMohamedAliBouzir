@@ -7,7 +7,7 @@ export default function RotateItem({ items }: { items: React.ReactNode[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const velocity = useVelocity(x);
-  const animationSpeed = 2;
+  const animationSpeed = 1;
 
   const itemWidth = 200;
   const gap = 20;
@@ -16,14 +16,10 @@ export default function RotateItem({ items }: { items: React.ReactNode[] }) {
   const singleSetWidth = items.length * itemTotalWidth;
   const totalContentWidth = repeatedItems.length * itemTotalWidth;
 
-  // Use a ref for state that persists across renders
   const carouselState = useRef({
     isPaused: false,
   });
-
-  // Main animation loop
   useAnimationFrame(() => {
-    // Only auto-scroll when not dragging or paused
     if (!carouselState.current.isPaused) {
       const current = x.get();
       const newPos = current - animationSpeed;

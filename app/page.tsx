@@ -6,7 +6,7 @@ import InformationsNumbers from "@/components/Home/InformationsNumbers";
 import Services from "@/components/Home/Services";
 import Technologies from "@/components/Home/Technologies";
 import Projects from "@/components/Home/projects";
-import LoadingCubes from "@/components/motions/LoadingCubes";
+import Experiences from "@/components/Home/Experiences";
 
 export default function Home() {
   return (
@@ -38,12 +38,12 @@ export default function Home() {
           Projects
         </h1>
       </section>
-      {/* <section className="relative flex flex-col items-center gap-8 justify-center xl:flex-row xl:items-center xl:justify-evenly">
-        <Projects />
+      <section className="relative flex flex-col items-center gap-8 justify-center xl:flex-row xl:items-center xl:justify-evenly">
+        <Experiences />
         <h1 className="whitespace-nowrap font-caveat absolute text-[18vw] font-extrabold text-black/5 z-0 select-none pointer-events-none leading-none bottom-[-10%]">
           Experience
         </h1>
-      </section> */}
+      </section>
     </div>
   );
 }
