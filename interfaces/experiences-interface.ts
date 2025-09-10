@@ -10,7 +10,7 @@ export interface IExperiencesInterface {
     endDate: string | Date;
     position:string;
     description:string;
-    technologies: string | string[]
+    technologies: string | string[];
     location?: string;
     website?: string;
 }

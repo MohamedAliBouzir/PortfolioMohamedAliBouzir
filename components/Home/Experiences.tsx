@@ -62,6 +62,7 @@ const Experiences = () => {
                   </div>
                   <div className="font-bold">{`${data.startDate} - ${data.endDate}`}</div>
                 </div>
+                <div className="ml-6" dangerouslySetInnerHTML={{ __html: data.description }} />
               </AccordionContent>
             </AccordionItem>
           ))}
