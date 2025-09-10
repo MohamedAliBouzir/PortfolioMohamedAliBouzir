@@ -18,7 +18,6 @@ export const experienceData: IExperiencesInterface[] = [
     position: "Full-stack JS Engineer",
     description: `<div id="erp-project">
                     <p><strong>Client:</strong> Leading European Stationing Company</p>
-                    <p><strong>Tech Stack:</strong> React.js, Express.js, MySQL, Docker</p>
 
                     <p>
                       I am actively contributing to the development of a highly flexible, configuration-driven ERP platform tailored for a major European stationing company. The system is designed to empower business teams to customize workflows and features without requiring changes to the underlying codebase.
@@ -232,19 +231,19 @@ export const experienceData: IExperiencesInterface[] = [
     description: `<div>
                     <strong>Sports and Betting Web Applications</strong>
                     <p>
-                      I developed user-friendly and responsive web applications for sports and betting, combining React, TypeScript, and clean architecture principles to create solid foundations. It was exciting to tackle challenges of performance and responsiveness to deliver seamless experiences. 🏀🏈
+                      I developed user-friendly and responsive web applications for sports and betting, combining React, TypeScript, and clean architecture principles to create solid foundations. It was exciting to tackle challenges of performance and responsiveness to deliver seamless experiences. 
                     </p>
                     <p>
-                      To keep data fresh and efficient, I integrated SWR and other libraries to smoothly consume REST APIs from our backend team, ensuring users always had the latest information at their fingertips. 🔄📡
+                      To keep data fresh and efficient, I integrated SWR and other libraries to smoothly consume REST APIs from our backend team, ensuring users always had the latest information at their fingertips.
                     </p>
                     <p>
-                      I made use of advanced React techniques like higher-order components, lazy loading, suspense, memos, and callbacks. These helped me boost performance and smooth out the user journey, making every interaction feel fast and intuitive. 🛠️🚀
+                      I made use of advanced React techniques like higher-order components, lazy loading, suspense, memos, and callbacks. These helped me boost performance and smooth out the user journey, making every interaction feel fast and intuitive. 
                     </p>
                     <p>
-                      One of the most rewarding parts was designing and building diverse, real-time interfaces — from authentication and betting to casinos, invoices, and live match tracking. Creating these helped bring energy and immediacy to the apps. 🎰💳📊
+                      One of the most rewarding parts was designing and building diverse, real-time interfaces — from authentication and betting to casinos, invoices, and live match tracking. Creating these helped bring energy and immediacy to the apps. 
                     </p>
                     <p>
-                      Throughout, my focus remained on crafting smooth, inviting designs that were both visually appealing and optimized for peak performance, ensuring every user could enjoy the experience effortlessly. 🎨💻
+                      Throughout, my focus remained on crafting smooth, inviting designs that were both visually appealing and optimized for peak performance, ensuring every user could enjoy the experience effortlessly.
                     </p>
                   </div>`,
     technologies: [
@@ -273,19 +272,19 @@ export const experienceData: IExperiencesInterface[] = [
                       The technical team at Store 2000 faced challenges using the Odoo interface on their mobiles during work. To make their lives easier, I developed a hybrid mobile app that empowered them to check available tools, report tasks, and create quotations on the spot.
                     </p>
                     <p>
-                      Using Ionic v6, Capacitor, React, TypeScript, Odoo v14, OpenAPI, and Python, I built a mini ERP app tailored specifically to the team's needs, putting the power of efficient task management and client interaction right in their hands. 📱💻
+                      Using Ionic v6, Capacitor, React, TypeScript, Odoo v14, OpenAPI, and Python, I built a mini ERP app tailored specifically to the team's needs, putting the power of efficient task management and client interaction right in their hands.
                     </p>
                     <p>
-                      A key feature was a user-friendly menu that allowed immediate quotation creation for clients, making it easy to assemble window blinds from available parts and keep the technical staff calendars up to date. 📆
+                      A key feature was a user-friendly menu that allowed immediate quotation creation for clients, making it easy to assemble window blinds from available parts and keep the technical staff calendars up to date. 
                     </p>
                     <p>
-                      Real-time task management was implemented to track active, completed, and in-progress jobs, keeping the team organized and productive throughout their busy days. 🔄
+                      Real-time task management was implemented to track active, completed, and in-progress jobs, keeping the team organized and productive throughout their busy days. 
                     </p>
                     <p>
-                      The app seamlessly integrated with the administration ERP (Odoo), ensuring all data stayed in sync and management had up-to-date information. 🔄
+                      The app seamlessly integrated with the administration ERP (Odoo), ensuring all data stayed in sync and management had up-to-date information. 
                     </p>
                     <p>
-                      I also developed a detailed client data page with contact info, requests, and house specifics, enabling better service delivery. 🏠 The billing system allowed clients to sign off on quotations, automatically generating invoices in PDF format directly in Odoo. 📝🧾
+                      I also developed a detailed client data page with contact info, requests, and house specifics, enabling better service delivery. The billing system allowed clients to sign off on quotations, automatically generating invoices in PDF format directly in Odoo.
                     </p>
                     <p>
                       This project truly transformed how the technical team worked, helping them be more efficient and responsive every day.
@@ -306,19 +305,19 @@ export const experienceData: IExperiencesInterface[] = [
     description: `<div>
                     <p><strong>Project:</strong> NOE</p>
                     <p>
-                      During my internship, I took on the challenge of automating the testing process for a platform with over 2000 pages. Using Selenium, I developed a comprehensive script that automatically tested all buttons, fields, pages, and filters to ensure flawless functionality. 🤖
+                      During my internship, I took on the challenge of automating the testing process for a platform with over 2000 pages. Using Selenium, I developed a comprehensive script that automatically tested all buttons, fields, pages, and filters to ensure flawless functionality.
                     </p>
                     <p>
-                      To make bug tracking efficient, I implemented automated bug reporting that included code status, error location (capturing the XPath in HTML5), and detailed reports for rapid issue resolution. 🐞📋
+                      To make bug tracking efficient, I implemented automated bug reporting that included code status, error location (capturing the XPath in HTML5), and detailed reports for rapid issue resolution.
                     </p>
                     <p>
-                      The script tested for page opening errors, non-functional filters, incorrect results, status code errors, redirections, and wrong paths, covering all critical aspects to maintain platform quality. 🛠️
+                      The script tested for page opening errors, non-functional filters, incorrect results, status code errors, redirections, and wrong paths, covering all critical aspects to maintain platform quality. 
                     </p>
                     <p>
-                      Performance optimization was a priority. By implementing multithreading, I reduced the testing time from 30 hours to 19 hours. Then, through multiprocessing, I further cut down the time to complete all tests to just 25 minutes, significantly accelerating the release cycle. ⏱️🚀
+                      Performance optimization was a priority. By implementing multithreading, I reduced the testing time from 30 hours to 19 hours. Then, through multiprocessing, I further cut down the time to complete all tests to just 25 minutes, significantly accelerating the release cycle.
                     </p>
                     <p>
-                      To ensure consistent testing, I set up a cron job to automatically run these tests twice daily, at 7 am and 6 pm, providing ongoing quality assurance without manual intervention. 🔄
+                      To ensure consistent testing, I set up a cron job to automatically run these tests twice daily, at 7 am and 6 pm, providing ongoing quality assurance without manual intervention. 
                     </p>
                   </div>
 `,

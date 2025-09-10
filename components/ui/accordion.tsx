@@ -2,7 +2,6 @@
 
 import {Root, Item, Trigger, Header, Content} from "@radix-ui/react-accordion"
 import { ChevronDownIcon } from "lucide-react"
-
 import { cn } from "@/lib/utils"
 
 function Accordion({
