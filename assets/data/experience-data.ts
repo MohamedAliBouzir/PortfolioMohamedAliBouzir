@@ -141,7 +141,15 @@ export const experienceData: IExperiencesInterface[] = [
                       Additionally, I ensured the CMS dashboard functionalities were stable and user-friendly, enabling web app managers to quickly update and modify their websites with ease.
                     </p>
                   </div>`,
-    technologies: ["HTML", "CSS", "Javascript", "JQuery", "AJAX", "PHP", "MySQL"],
+    technologies: [
+      "HTML",
+      "CSS",
+      "Javascript",
+      "JQuery",
+      "AJAX",
+      "PHP",
+      "MySQL",
+    ],
   },
   {
     id: 4,
