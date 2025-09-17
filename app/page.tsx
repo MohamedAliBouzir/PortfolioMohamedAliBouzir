@@ -7,6 +7,7 @@ import Services from "@/components/Home/Services";
 import Technologies from "@/components/Home/Technologies";
 import Projects from "@/components/Home/projects";
 import Experiences from "@/components/Home/Experiences";
+import Pricing from "@/components/Home/Pricing";
 
 export default function Home() {
   return (
@@ -42,6 +43,12 @@ export default function Home() {
         <Experiences />
         <h1 className="whitespace-nowrap font-caveat absolute text-[18vw] font-extrabold text-black/5 z-0 select-none pointer-events-none leading-none bottom-[-10%]">
           History
+        </h1>
+      </section>
+      <section className="relative w-full h-full flex flex-col items-center gap-8 justify-center xl:flex-row xl:items-center xl:justify-evenly">
+        <Pricing />
+        <h1 className="whitespace-nowrap font-caveat absolute text-[18vw] font-extrabold text-black/5 z-0 select-none pointer-events-none leading-none bottom-[-10%]">
+          Honey
         </h1>
       </section>
     </div>
