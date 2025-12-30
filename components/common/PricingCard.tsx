@@ -3,58 +3,77 @@ import { Check } from "lucide-react";
 
 const PricingCard: React.FC<IPricingCardProps> = ({ plan }) => {
   return (
-    <div className="relative w-80 rounded-2xl border dark:border-gray-200 p-6 shadow-md">
+    <div
+      className={`relative h-full rounded-2xl border p-6 sm:p-8 transition-all duration-300 hover:shadow-lg hover:scale-105 flex flex-col ${
+        plan.popular
+          ? "border-accent bg-gradient-to-b from-accent/10 to-accent/5 shadow-lg"
+          : "border-border hover:border-accent/50"
+      }`}
+    >
       {plan.popular && (
-        <span className="absolute -top-3 right-4 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-white shadow">
+        <span className="absolute -top-3 right-4 rounded-full bg-accent px-4 py-1 text-xs font-bold text-white shadow-lg">
           POPULAR
         </span>
       )}
-      <p className="text-sm font-semibold uppercase white:text-gray-500">
-        {plan.type}
-      </p>
-      <div className="mt-2 flex items-end gap-1">
-        <span className="text-4xl font-bold">{plan.price}</span>
-        <span className="text-lg font-semibold text-accent">
+
+      {/* Plan Type */}
+      <div className="mb-4">
+        <p className="text-xs sm:text-sm font-bold uppercase tracking-wider text-accent">
+          {plan.type}
+        </p>
+      </div>
+
+      {/* Price */}
+      <div className="mb-6 flex items-baseline gap-1">
+        <span className="text-3xl sm:text-4xl font-bold">
           {plan.currency}
+          {plan.price}
         </span>
-        <span className="text-sm font-medium text-gray-500 mb-1">
-          {plan.period}
+        <span className="text-sm sm:text-base text-muted-foreground">
+          /{plan.period}
         </span>
       </div>
-      <p className="mt-4 text-sm white:text-gray-600">{plan.description}</p>
-      <ul className="mt-6 space-y-3 text-sm">
+
+      {/* Description */}
+      <p className="text-sm text-muted-foreground mb-6 flex-grow">
+        {plan.description}
+      </p>
+
+      {/* Features */}
+      <ul className="space-y-3 mb-8">
         {plan.features.map((feature, index) => (
           <li
             key={index}
-            className={`flex items-center gap-2 ${
-              feature.available ? "" : "text-gray-400 line-through"
+            className={`flex items-center gap-3 text-sm ${
+              feature.available
+                ? "text-foreground"
+                : "text-muted-foreground line-through"
             }`}
           >
             <Check
-              size={16}
-              className={feature.available ? "text-accent" : ""}
-            />{" "}
-            {feature.name}
+              size={18}
+              className={`flex-shrink-0 ${
+                feature.available
+                  ? "text-accent stroke-[3]"
+                  : "text-muted-foreground"
+              }`}
+            />
+            <span>{feature.name}</span>
           </li>
         ))}
-        {/* <li className="flex items-center gap-2">
-          <Check size={16} className="text-accent" /> Web Development
-        </li>
-        <li className="flex items-center gap-2">
-          <Check size={16} className="text-accent" /> Design
-        </li>
-        <li className="flex items-center gap-2 text-gray-400 line-through">
-          <Check size={16} /> SEO & Branding
-        </li> */}
       </ul>
-      <div className="absolute bottom-4 right-4 grid grid-cols-3 gap-1">
-        {Array.from({ length: 9 }).map((_, i) => (
-          <div
-            key={i}
-            className="h-2 w-2 rounded-full border border-gray-300"
-          ></div>
-        ))}
-      </div>
+
+      {/* Decorative elements */}
+      {plan.popular && (
+        <div className="absolute bottom-4 right-4 flex gap-1.5 opacity-40">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div
+              key={i}
+              className="w-1.5 h-1.5 rounded-full bg-accent"
+            ></div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
