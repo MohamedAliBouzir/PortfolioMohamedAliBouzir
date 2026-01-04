@@ -3,7 +3,7 @@ import { Check } from "lucide-react";
 
 const PricingCard: React.FC<IPricingCardProps> = ({ plan }) => {
   return (
-    <div className="relative w-80 rounded-2xl border dark:border-gray-200 p-6 shadow-md">
+    <div className="relative w-full max-w-sm rounded-2xl border dark:border-gray-200 p-6 shadow-md transition-transform hover:scale-105">
       {plan.popular && (
         <span className="absolute -top-3 right-4 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-white shadow">
           POPULAR
@@ -26,9 +26,8 @@ const PricingCard: React.FC<IPricingCardProps> = ({ plan }) => {
         {plan.features.map((feature, index) => (
           <li
             key={index}
-            className={`flex items-center gap-2 ${
-              feature.available ? "" : "text-gray-400 line-through"
-            }`}
+            className={`flex items-center gap-2 ${feature.available ? "" : "text-gray-400 line-through"
+              }`}
           >
             <Check
               size={16}

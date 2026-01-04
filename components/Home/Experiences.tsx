@@ -25,12 +25,12 @@ const Experiences = () => {
         initial={{ opacity: 0, y: -50 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.5 }}
-        className="w-screen flex items-center justify-center"
+        className="w-full flex items-center justify-center"
       >
         <Accordion
           type="single"
           collapsible
-          className="w-6xl max-w-6xl "
+          className="w-[90vw] md:w-[80vw] max-w-6xl"
           defaultValue="item-1"
         >
           {experienceData.map((data) => (
