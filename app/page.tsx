@@ -1,5 +1,4 @@
 import DevTroll from "@/assets/images/jpg/DevTroll.jpg";
-import PersonalPic from "@/assets/images/jpg/photoPersonal.png";
 import PersonalDescription from "@/components/Home/PersonalDescription";
 import ImageHolder from "@/components/motions/ImageHolder";
 import InformationsNumbers from "@/components/Home/InformationsNumbers";

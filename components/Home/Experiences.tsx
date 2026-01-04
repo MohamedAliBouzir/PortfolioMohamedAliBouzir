@@ -60,7 +60,21 @@ const Experiences = () => {
                     <div className="text-xl font-bold">{data.position}</div>
                     <div className="font-mono">{`${data.type}/${data.presence}`}</div>
                   </div>
-                  <div className="font-bold">{`${data.startDate} - ${data.endDate}`}</div>
+                  <div className="font-bold">
+                    {data.startDate instanceof Date
+                      ? data.startDate.toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                      })
+                      : data.startDate}{" "}
+                    -{" "}
+                    {data.endDate instanceof Date
+                      ? data.endDate.toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "short",
+                      })
+                      : data.endDate}
+                  </div>
                 </div>
                 <div className="ml-6" dangerouslySetInnerHTML={{ __html: data.description }} />
               </AccordionContent>
