@@ -1,49 +1,27 @@
 "use client";
 
-import Link from "next/link";
-import { ModeToggle } from "../LightDarkButton";
-import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 import { navigationMenu } from "@/Content/navigation-menu";
-import ClickMotion from "../motions/ClickMotion";
+import { useUIStore } from "@/store/ui.store";
 
 const Nav = () => {
-  const pathname = usePathname();
+  const setCursorVariant = useUIStore((s) => s.setCursorVariant);
+
   return (
-    <nav className="flex items-center gap-8">
-      {navigationMenu.map((link, index) => {
-        return (
-          <Link
-            href={link.path}
-            key={index}
-            className={`relative px-1 transition-colors duration-300
-                        ${
-                          link.path === pathname
-                            ? "text-accent"
-                            : "hover:text-accent"
-                        }
-                        group
-                      `}
-          >
-            <span className="mb-1 inline-block">{link.name}</span>
-            <span
-              className={`
-                          pointer-events-none absolute left-1/2 bottom-0 h-[2px] w-0 bg-accent
-                          transition-all duration-300 ease-in-out
-                          ${
-                            link.path === pathname
-                              ? "w-full"
-                              : "group-hover: group-hover:w-full"
-                          }
-                          transform -translate-x-1/2
-                        `}
-              aria-hidden="true"
-            />
-          </Link>
-        );
-      })}
-      <ClickMotion>
-        <ModeToggle />
-      </ClickMotion>
+    <nav className="hidden lg:flex items-center gap-1">
+      {navigationMenu.map((link) => (
+        <motion.a
+          key={link.index}
+          href={link.path}
+          whileHover={{ scale: 1.04 }}
+          onMouseEnter={() => setCursorVariant("hover")}
+          onMouseLeave={() => setCursorVariant("default")}
+          className="relative px-4 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 group cursor-none"
+        >
+          {link.name}
+          <span className="absolute inset-x-4 bottom-1 h-px bg-accent scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
+        </motion.a>
+      ))}
     </nav>
   );
 };
