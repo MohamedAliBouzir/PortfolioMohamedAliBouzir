@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Geist_Mono } from "next/font/google";
+import { Caveat } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import { ThemeProvider } from "@/provider/theme-provider";
 import PageWrapper from "@/components/layout/PageWrapper";
-import { Caveat } from "next/font/google";
 
 const caveat = Caveat({
   subsets: ["latin"],
@@ -18,9 +18,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MohA Li Bouzir",
+  title: "Mohamed Ali Bouzir — Full-Stack JS Engineer",
   description:
-    "A web developer experienced in enhancing application performance, with a strong focus on web development using React and Next.js. Proficient in collaborative teamwork and effectively integrating contributions into projects.",
+    "Full-Stack JS Engineer specializing in React, Next.js, and Node.js. Building high-performance web applications with pixel-perfect UIs and scalable backends.",
+  keywords: ["Full-Stack Developer", "React", "Next.js", "TypeScript", "Tunisia"],
+  authors: [{ name: "Mohamed Ali Bouzir" }],
 };
 
 export default function RootLayout({
@@ -29,15 +31,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className="no-scrollbar">
-      <body className={`${geistMono.variable} ${caveat.variable} antialiased `}>
+    <html lang="en" suppressHydrationWarning className="scroll-smooth">
+      <body className={`${geistMono.variable} ${caveat.variable} antialiased cursor-none`}>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
-          <div className="sticky top-0 z-50 bg-background/80 backdrop-blur ">
+          <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
             <Header />
           </div>
           <PageWrapper>{children}</PageWrapper>

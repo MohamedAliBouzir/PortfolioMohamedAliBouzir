@@ -6,11 +6,11 @@ export interface IExperiencesInterface {
     societeName: string;
     type?:string | null | undefined;
     presence?: string;
-    startDate:string | Date;
-    endDate: string | Date;
-    position:string;
-    description:string;
-    technologies: string | string[];
+    startDate: string;
+    endDate: string;
+    position: string;
+    description: string;
+    technologies: string[];
     location?: string;
     website?: string;
 }
