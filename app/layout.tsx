@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Mohamed Ali Bouzir — Full-Stack JS Engineer",
+  title: "Mohamed Ali Bouzir — Software Engineer",
   description:
     "Full-Stack JS Engineer specializing in React, Next.js, and Node.js. Building high-performance web applications with pixel-perfect UIs and scalable backends.",
   keywords: ["Full-Stack Developer", "React", "Next.js", "TypeScript", "Tunisia"],

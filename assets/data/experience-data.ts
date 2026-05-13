@@ -8,6 +8,59 @@ import Digital from "@/assets/images/jpg/societies/digitalmarket.jpeg";
 import Codetime from "@/assets/images/jpg/societies/codetime.jpg";
 export const experienceData: IExperiencesInterface[] = [
   {
+    id: 0,
+    logo: null,
+    societeName: "MAYRA Entertainment",
+    type: "Contract",
+    presence: "On-site",
+    location: "Sousse, Tunisia",
+    startDate: "Jan 2026",
+    endDate: "Present",
+    position: "Software Architect & Lead Engineer",
+    description: `<div id="mayra-entertainment">
+                    <p><strong>Large-scale real-time financial platform</strong> — end-to-end system architecture, team leadership, and full-stack engineering.</p>
+
+                    <h3>Architecture & Engineering</h3>
+                    <ul>
+                      <li>Designed and owned end-to-end system architecture covering module boundaries, data flow contracts, and future microservices migration path.</li>
+                      <li>Architected a <strong>multi-tenant data isolation layer</strong> using a schema-per-tenant PostgreSQL strategy, enabling seamless future migration to fully isolated microservices without application-level rewrites.</li>
+                      <li>Architected a <strong>zero-trust authentication system</strong> using opaque session tokens stored in Redis, HttpOnly/Secure/Strict cookies, and server-side session invalidation — eliminating XSS token-theft attack surface entirely.</li>
+                      <li>Designed a <strong>4-layer wallet mutation security model</strong> combining idempotency guards, distributed Redis locks, optimistic concurrency versioning, and atomic SQL constraints to prevent double-spend and race conditions under concurrent load.</li>
+                      <li>Built an <strong>asynchronous audit pipeline</strong> using BullMQ and Redis, decoupling all logging and observability from the request lifecycle without adding latency to user-facing responses.</li>
+                      <li>Architected a <strong>real-time engine</strong> with atomic Lua scripts in Redis, ensuring transactions are frozen at payment time with exposure monitoring enforcement to control financial risk.</li>
+                    </ul>
+
+                    <h3>Team Leadership & Governance</h3>
+                    <ul>
+                      <li>Led backend and frontend engineering teams across the full stack (NestJS, Next.js, PostgreSQL, Redis, Prisma), enforcing strict module encapsulation and cross-module communication contracts via EventEmitter and BullMQ.</li>
+                      <li>Established platform-wide architectural governance: no direct cross-module Prisma access, DTO-only boundaries, and event-driven side effects — reducing coupling and enabling independent team delivery.</li>
+                      <li>Produced formal technical documentation including technology selection reports, integration specification letters, and architectural decision records for regulatory and banking compliance workflows.</li>
+                    </ul>
+
+                    <h3>Integrations & Testing</h3>
+                    <ul>
+                      <li>Integrated third-party payment infrastructure, designing the deposit flow from frontend initiation through backend confirmation to atomic wallet credit with full traceability.</li>
+                      <li>Implemented a comprehensive E2E and unit test suite covering auth lifecycle, session management, and concurrent wallet operations to guarantee correctness under adversarial conditions.</li>
+                    </ul>
+                  </div>`,
+    technologies: [
+      "NestJS",
+      "Next.js",
+      "TypeScript",
+      "PostgreSQL",
+      "Redis",
+      "Prisma",
+      "BullMQ",
+      "Docker",
+      "CI/CD",
+      "Zustand",
+      "Tanstack",
+      "Tailwind CSS",
+      "shadcn/ui",
+      "Framer Motion",
+    ],
+  },
+  {
     id: 1,
     logo: ViviaLogo,
     societeName: "VIVIA-M",

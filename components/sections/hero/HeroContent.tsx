@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import type { Variants } from "framer-motion";
 import { useUIStore } from "@/store/ui.store";
+import ShineText from "@/components/common/ShineText";
 import GradientButton from "@/components/ui/GradientButton";
 
 const container: Variants = {
@@ -32,7 +33,7 @@ export default function HeroContent() {
         variants={item}
         className="text-xs font-mono uppercase tracking-[0.3em] text-accent bg-accent/10 px-4 py-1.5 rounded-full border border-accent/20"
       >
-        Full-Stack JS Engineer
+        Software Engineer
       </motion.span>
 
       <motion.h1
@@ -42,7 +43,7 @@ export default function HeroContent() {
         onMouseLeave={() => setCursorVariant("default")}
       >
         <span className="block text-foreground">Mohamed Ali</span>
-        <span className="block aurora-gradient-text">Bouzir</span>
+        <ShineText as="span" className="block">Bouzir</ShineText>
       </motion.h1>
 
       <motion.p

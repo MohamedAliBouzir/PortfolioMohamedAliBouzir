@@ -81,7 +81,9 @@ export default function AboutContent() {
         </div>
 
         <motion.a
-          href="/curriculum-vitae"
+          href="/Mohamed_Ali_BOUZIR_CV.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
           className="inline-flex items-center gap-2 text-sm font-semibold text-accent hover:gap-3 transition-all duration-200"
           whileHover={{ x: 4 }}
         >

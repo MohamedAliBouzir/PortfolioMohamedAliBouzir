@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import ShineText from "@/components/common/ShineText";
 
 interface SectionHeaderProps {
   label?: string;
@@ -33,7 +34,7 @@ export default function SectionHeader({
       <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight text-balance">
         {title}{" "}
         {highlight && (
-          <span className="aurora-gradient-text">{highlight}</span>
+          <ShineText>{highlight}</ShineText>
         )}
       </h2>
       {description && (

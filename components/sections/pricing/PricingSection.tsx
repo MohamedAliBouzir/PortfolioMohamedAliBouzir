@@ -8,7 +8,8 @@ const PricingGrid = lazy(() => import("./PricingGrid"));
 export default function PricingSection() {
   return (
     <SectionWrapper id="pricing">
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      {/* Background orbs — z-0 so cards always sit above */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         <div className="aurora-orb-1 absolute top-[10%] left-[20%] w-[500px] h-[500px] rounded-full bg-aurora-violet/12 blur-[140px]" />
         <div className="aurora-orb-2 absolute bottom-[10%] right-[10%] w-[350px] h-[350px] rounded-full bg-aurora-teal/10 blur-[110px]" />
       </div>

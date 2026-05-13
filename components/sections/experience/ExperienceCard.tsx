@@ -5,6 +5,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import type { IExperiencesInterface } from "@/interfaces/experiences-interface";
 import { useUIStore } from "@/store/ui.store";
+import dynamic from "next/dynamic";
+
+const LogoPlaceholder3D = dynamic(() => import("@/components/common/LogoPlaceholder3D"), {
+  ssr: false,
+  loading: () => <span className="text-lg font-bold text-muted-foreground font-mono" />,
+});
 
 interface ExperienceCardProps {
   experience: IExperiencesInterface;
@@ -60,9 +66,7 @@ export default function ExperienceCard({ experience, index, isLeft }: Experience
                 className="object-cover w-full h-full"
               />
             ) : (
-              <span className="text-lg font-bold text-muted-foreground">
-                {experience.societeName.charAt(0)}
-              </span>
+              <LogoPlaceholder3D initials={experience.societeName} size={44} />
             )}
           </div>
 

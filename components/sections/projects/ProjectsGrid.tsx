@@ -49,7 +49,7 @@ export default function ProjectsGrid() {
       </div>
 
       {/* Grid */}
-      <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 auto-rows-fr">
         <AnimatePresence mode="popLayout">
           {filtered.map((project, i) => (
             <motion.div
@@ -59,6 +59,7 @@ export default function ProjectsGrid() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.92 }}
               transition={{ duration: 0.35 }}
+              className="h-full"
             >
               <ProjectCard project={project} index={i} />
             </motion.div>
