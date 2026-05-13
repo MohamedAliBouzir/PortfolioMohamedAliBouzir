@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import type { Variants } from "framer-motion";
 import { useUIStore } from "@/store/ui.store";
+import GradientButton from "@/components/ui/GradientButton";
 
 const container: Variants = {
   hidden: { opacity: 0 },
@@ -53,19 +54,15 @@ export default function HeroContent() {
       </motion.p>
 
       <motion.div variants={item} className="flex items-center gap-4 mt-2">
-        <motion.a
+        <GradientButton
+          as="a"
           href="#contact"
-          className="relative px-7 py-3 rounded-full font-semibold text-sm bg-accent text-accent-foreground overflow-hidden group"
-          whileHover={{ scale: 1.04 }}
-          whileTap={{ scale: 0.97 }}
+          className="px-7 py-3 rounded-full font-semibold text-sm cursor-none"
           onMouseEnter={() => setCursorVariant("hover")}
           onMouseLeave={() => setCursorVariant("default")}
         >
-          <span className="relative z-10">Get in touch</span>
-          <motion.div
-            className="absolute inset-0 aurora-gradient opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          />
-        </motion.a>
+          Get in touch
+        </GradientButton>
 
         <motion.a
           href="#projects"

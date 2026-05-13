@@ -27,23 +27,19 @@ export default function AboutContent() {
       ref={ref}
       className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full"
     >
-      {/* 3D Avatar side */}
+      {/* Avatar side */}
       <motion.div
         initial={{ opacity: 0, x: -40 }}
         animate={inView ? { opacity: 1, x: 0 } : {}}
         transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
         className="flex justify-center"
       >
-        <div className="relative w-72 h-80 sm:w-80 sm:h-96">
-          {/* Aurora glow ring behind avatar */}
-          <div className="absolute inset-[-20%] rounded-full aurora-gradient opacity-15 blur-3xl pointer-events-none" />
-
-          {/* 3D canvas */}
-          <div className="relative w-full h-full">
-            <Suspense fallback={<AvatarFallback />}>
-              <AvatarCanvas />
-            </Suspense>
-          </div>
+        <div className="relative w-80 h-80 sm:w-96 sm:h-96">
+          {/* Deep aurora glow behind */}
+          <div className="absolute inset-[-25%] rounded-full aurora-gradient opacity-20 blur-3xl pointer-events-none" />
+          <Suspense fallback={<AvatarFallback />}>
+            <AvatarCanvas />
+          </Suspense>
         </div>
       </motion.div>
 

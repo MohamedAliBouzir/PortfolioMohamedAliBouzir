@@ -2,7 +2,6 @@
 
 import { Suspense, useRef, useMemo } from "react";
 import { Canvas, useFrame, useLoader } from "@react-three/fiber";
-import { ContactShadows } from "@react-three/drei";
 import * as THREE from "three";
 import { useTheme } from "next-themes";
 
@@ -40,7 +39,7 @@ function buildPlanetTexture(color: string, isDark: boolean, logoTex: THREE.Textu
   const ctx = cv.getContext("2d")!;
 
   /* ── Solid base fill ── */
-  ctx.fillStyle = isDark ? "#0d0b1e" : "#f0f4ff";
+  ctx.fillStyle = isDark ? "#0d0b1e" : "#ecfdf5";
   ctx.fillRect(0, 0, S, S);
 
   /* ── Color atmosphere gradient ── */
@@ -104,7 +103,7 @@ function OrbitalRing({ radius, tilt, isDark }: { radius: number; tilt: number; i
 ───────────────────────────────────────────────────────────────── */
 function Planet({
   src, radius, size, speed, tilt, startAngle, selfSpin,
-  color, emissive, isDark,
+  color, isDark,
 }: {
   src: string; radius: number; size: number; speed: number;
   tilt: number; startAngle: number; selfSpin: number;
@@ -184,10 +183,129 @@ function Planet({
 /* ─────────────────────────────────────────────────────────────────
    SUN  — center glowing sphere
 ───────────────────────────────────────────────────────────────── */
+function SolarFlare({ isDark, offset }: { isDark: boolean; offset: number }) {
+  const ref = useRef<THREE.Mesh>(null);
+  const randomAxis = useMemo(() => new THREE.Vector3(Math.random(), Math.random(), Math.random()).normalize(), []);
+  
+  useFrame((state) => {
+    const t = state.clock.elapsedTime + offset;
+    if (ref.current) {
+      // Orbit around the sun
+      const radius = 0.62 + Math.sin(t * 1.5) * 0.05;
+      ref.current.position.set(
+        Math.cos(t * 0.8) * radius,
+        Math.sin(t * 1.2) * radius,
+        Math.sin(t * 0.9) * radius
+      );
+      
+      // Pulse and rotate
+      const s = 0.12 + Math.sin(t * 2.5) * 0.05;
+      ref.current.scale.set(s, s * 1.8, s);
+      ref.current.rotateOnAxis(randomAxis, 0.05);
+    }
+  });
+
+  return (
+    <mesh ref={ref}>
+      <sphereGeometry args={[1, 12, 12]} />
+      <meshStandardMaterial
+        color={isDark ? "#ffaa00" : "#ffcc00"}
+        emissive={isDark ? "#ff4400" : "#ff8800"}
+        emissiveIntensity={isDark ? 8 : 4}
+        transparent
+        opacity={0.8}
+      />
+    </mesh>
+  );
+}
+
+function SunGlow({ isDark }: { isDark: boolean }) {
+  const spriteRef = useRef<THREE.Sprite>(null);
+  
+  const glowTex = useMemo(() => {
+    const S = 128;
+    const cv = document.createElement("canvas");
+    cv.width = cv.height = S;
+    const ctx = cv.getContext("2d")!;
+    const g = ctx.createRadialGradient(S/2, S/2, 0, S/2, S/2, S/2);
+    g.addColorStop(0, isDark ? "rgba(255, 180, 50, 0.7)" : "rgba(255, 240, 180, 0.6)");
+    g.addColorStop(0.4, isDark ? "rgba(255, 80, 0, 0.2)" : "rgba(255, 180, 50, 0.15)");
+    g.addColorStop(1, "rgba(255, 40, 0, 0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, S, S);
+    return new THREE.CanvasTexture(cv);
+  }, [isDark]);
+
+  useFrame((state) => {
+    const t = state.clock.elapsedTime;
+    if (spriteRef.current) {
+      const scale = 2.8 + Math.sin(t * 1.2) * 0.3;
+      spriteRef.current.scale.set(scale, scale, 1);
+    }
+  });
+
+  return (
+    <sprite ref={spriteRef}>
+      <spriteMaterial
+        map={glowTex}
+        transparent
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+      />
+    </sprite>
+  );
+}
+
+function SolarRays({ isDark }: { isDark: boolean }) {
+  const groupRef = useRef<THREE.Group>(null);
+  
+  const rayTex = useMemo(() => {
+    const W = 32, H = 256;
+    const cv = document.createElement("canvas");
+    cv.width = W; cv.height = H;
+    const ctx = cv.getContext("2d")!;
+    // Create a soft linear gradient that fades at both ends
+    const g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, "rgba(255, 255, 255, 0)");
+    g.addColorStop(0.5, isDark ? "rgba(255, 180, 50, 0.6)" : "rgba(255, 220, 100, 0.4)");
+    g.addColorStop(1, "rgba(255, 255, 255, 0)");
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, W, H);
+    return new THREE.CanvasTexture(cv);
+  }, [isDark]);
+
+  useFrame((state) => {
+    const t = state.clock.elapsedTime;
+    if (groupRef.current) {
+      groupRef.current.rotation.z = t * 0.08;
+      groupRef.current.children.forEach((child, i) => {
+        const s = 1 + Math.sin(t * 1.5 + i * 0.8) * 0.4;
+        child.scale.set(1, s, 1);
+        // @ts-ignore
+        if (child.material) child.material.opacity = (isDark ? 0.3 : 0.2) * (0.6 + Math.sin(t * 2 + i) * 0.4);
+      });
+    }
+  });
+
+  return (
+    <group ref={groupRef}>
+      {[...Array(12)].map((_, i) => (
+        <mesh key={i} rotation={[0, 0, (i * Math.PI) / 6]}>
+          <planeGeometry args={[0.08, 3.2]} />
+          <meshBasicMaterial
+            map={rayTex}
+            transparent
+            blending={THREE.AdditiveBlending}
+            depthWrite={false}
+          />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
 function Sun({ isDark }: { isDark: boolean }) {
-  const coreRef   = useRef<THREE.Mesh>(null);
-  const corona1Ref = useRef<THREE.Mesh>(null);
-  const corona2Ref = useRef<THREE.Mesh>(null);
+  const coreRef = useRef<THREE.Mesh>(null);
 
   /* Sun core texture — fiery gradient */
   const sunTex = useMemo(() => {
@@ -197,17 +315,17 @@ function Sun({ isDark }: { isDark: boolean }) {
     const ctx = cv.getContext("2d")!;
     const g = ctx.createRadialGradient(S * 0.45, S * 0.4, 0, S / 2, S / 2, S / 2);
     if (isDark) {
-      g.addColorStop(0,   "#fff7e0");
-      g.addColorStop(0.3, "#ffcc44");
-      g.addColorStop(0.6, "#ff6a00");
-      g.addColorStop(0.85,"#c026d3");
-      g.addColorStop(1,   "#4c1d95");
+      g.addColorStop(0,   "#fff5e6");
+      g.addColorStop(0.2, "#ffe066");
+      g.addColorStop(0.4, "#ffaa00");
+      g.addColorStop(0.7, "#ff6600");
+      g.addColorStop(1,   "#ff4400");
     } else {
-      g.addColorStop(0,   "#ffffff");
-      g.addColorStop(0.3, "#ffe066");
-      g.addColorStop(0.65,"#ff9900");
-      g.addColorStop(0.85,"#f97316");
-      g.addColorStop(1,   "#fde68a");
+      g.addColorStop(0,   "#fffcf0");
+      g.addColorStop(0.3, "#fff2b3");
+      g.addColorStop(0.65,"#ffcc00");
+      g.addColorStop(0.85,"#ff9900");
+      g.addColorStop(1,   "#ffcc00");
     }
     ctx.fillStyle = g;
     ctx.fillRect(0, 0, S, S);
@@ -217,12 +335,7 @@ function Sun({ isDark }: { isDark: boolean }) {
   useFrame((state) => {
     const t = state.clock.elapsedTime;
     /* Slow core rotation */
-    if (coreRef.current)   coreRef.current.rotation.y   = t * 0.15;
-    /* Pulsing corona */
-    const pulse = 1 + Math.sin(t * 1.8) * 0.04;
-    if (corona1Ref.current) corona1Ref.current.scale.setScalar(pulse);
-    const pulse2 = 1 + Math.sin(t * 1.2 + 1) * 0.06;
-    if (corona2Ref.current) corona2Ref.current.scale.setScalar(pulse2);
+    if (coreRef.current) coreRef.current.rotation.y = t * 0.2;
   });
 
   return (
@@ -235,39 +348,26 @@ function Sun({ isDark }: { isDark: boolean }) {
         decay={2}
       />
 
-      {/* Outer corona 2 — very faint wide halo */}
-      <mesh ref={corona2Ref}>
-        <sphereGeometry args={[0.88, 32, 32]} />
-        <meshStandardMaterial
-          color={isDark ? "#ff6a00" : "#ffcc44"}
-          emissive={isDark ? "#ff6a00" : "#ffcc44"}
-          emissiveIntensity={isDark ? 0.3 : 0.2}
-          transparent opacity={isDark ? 0.08 : 0.06}
-          side={THREE.BackSide} depthWrite={false}
-        />
-      </mesh>
+      {/* Dynamic solar flares (flames) */}
+      {[0, 1.2, 2.5, 4, 5.2].map((off) => (
+        <SolarFlare key={off} isDark={isDark} offset={off} />
+      ))}
 
-      {/* Inner corona 1 */}
-      <mesh ref={corona1Ref}>
-        <sphereGeometry args={[0.68, 32, 32]} />
-        <meshStandardMaterial
-          color={isDark ? "#ffcc44" : "#ffe066"}
-          emissive={isDark ? "#ffcc44" : "#ffe066"}
-          emissiveIntensity={isDark ? 0.7 : 0.4}
-          transparent opacity={isDark ? 0.18 : 0.12}
-          side={THREE.BackSide} depthWrite={false}
-        />
-      </mesh>
+      {/* Soft volumetric glow (fades out) */}
+      <SunGlow isDark={isDark} />
+
+      {/* Pulsing solar rays (extend and shrink) */}
+      <SolarRays isDark={isDark} />
 
       {/* Sun core */}
       <mesh ref={coreRef}>
         <sphereGeometry args={[0.52, 48, 48]} />
         <meshStandardMaterial
           map={sunTex}
-          color="#ffffff"
+          color="#fff5e6"
           emissiveMap={sunTex}
-          emissive="#ffffff"
-          emissiveIntensity={isDark ? 1.8 : 1.2}
+          emissive="#fff5e6"
+          emissiveIntensity={isDark ? 2.2 : 1.4}
           roughness={0.4}
           metalness={0.0}
         />
@@ -287,8 +387,8 @@ function StarField({ isDark }: { isDark: boolean }) {
     const pos = new Float32Array(count * 3);
     const col = new Float32Array(count * 3);
     const palette = isDark
-      ? ["#7c3aed","#0ea5e9","#10b981","#ec4899","#ffffff"].map(h => new THREE.Color(h))
-      : ["#a78bfa","#38bdf8","#6ee7b7","#f9a8d4","#94a3b8"].map(h => new THREE.Color(h));
+      ? ["#00FF41","#ffffff","#008F11","#003B00","#ffffff"].map(h => new THREE.Color(h))
+      : ["#059669","#1a2e1a","#10b981","#065f46","#4a6741"].map(h => new THREE.Color(h));
     for (let i = 0; i < count; i++) {
       const r = 8 + Math.random() * 8;
       const theta = Math.random() * Math.PI * 2;
@@ -329,14 +429,15 @@ function StarField({ isDark }: { isDark: boolean }) {
 function SceneLights({ isDark }: { isDark: boolean }) {
   return isDark ? (
     <>
-      <ambientLight intensity={0.08} color="#0d0b2e" />
-      <pointLight position={[0, 8, 6]}  intensity={20} color="#7c3aed" distance={20} decay={2} />
-      <pointLight position={[0,-8,-6]}  intensity={15} color="#ec4899" distance={18} decay={2} />
+      <ambientLight intensity={0.15} color="#0d0b2e" />
+      <pointLight position={[0, 8, 6]}  intensity={45} color="#ffcc00" distance={20} decay={2} />
+      <pointLight position={[0,-8,-6]}  intensity={35} color="#ff8800" distance={18} decay={2} />
     </>
   ) : (
     <>
-      <ambientLight intensity={0.6} color="#e8f0ff" />
-      <directionalLight position={[4, 6, 5]} intensity={0.6} color="#f0e8ff" />
+      <ambientLight intensity={0.75} color="#d1fae5" />
+      <directionalLight position={[4, 6, 5]} intensity={0.8} color="#ecfdf5" />
+      <pointLight position={[-4, 3, 4]} intensity={30} color="#059669" distance={16} decay={2} />
     </>
   );
 }
@@ -384,7 +485,7 @@ export default function HeroCanvas() {
           antialias: true,
           alpha: true,
           toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: isDark ? 1.1 : 1.4,
+          toneMappingExposure: isDark ? 1.4 : 1.6,
         }}
         dpr={[1, 1.5]}
       >

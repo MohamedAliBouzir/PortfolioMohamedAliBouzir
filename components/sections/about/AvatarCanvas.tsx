@@ -1,202 +1,171 @@
 "use client";
 
-import { Suspense, useRef, useEffect, useState } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { useGLTF, useAnimations, Float, ContactShadows, Environment } from "@react-three/drei";
-import * as THREE from "three";
-import { useTheme } from "next-themes";
+import { useRef } from "react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import Image from "next/image";
+import AvatarSvg from "@/assets/images/svg/avatar-moha.svg";
 
-/* ── Ready Player Me avatar loader ────────────────────────── */
-function RPMAvatar({ isDark }: { isDark: boolean }) {
-  const groupRef = useRef<THREE.Group>(null);
-  const { scene, animations } = useGLTF("/avatar.glb");
-  const { actions, names } = useAnimations(animations, groupRef);
-
-  /* Play idle animation if one exists */
-  useEffect(() => {
-    const idleName = names.find(
-      (n) => n.toLowerCase().includes("idle") || n.toLowerCase().includes("breathing")
-    ) ?? names[0];
-    if (idleName && actions[idleName]) {
-      actions[idleName]!.reset().fadeIn(0.5).play();
-    }
-    return () => {
-      actions[idleName]?.fadeOut(0.3);
-    };
-  }, [actions, names]);
-
-  /* Gentle idle sway */
-  useFrame((state) => {
-    if (!groupRef.current) return;
-    const t = state.clock.elapsedTime;
-    groupRef.current.rotation.y = Math.sin(t * 0.3) * 0.12;
-  });
-
-  /* Apply aurora emissive tint to avatar materials */
-  useEffect(() => {
-    scene.traverse((child) => {
-      if (!(child instanceof THREE.Mesh)) return;
-      const mats = Array.isArray(child.material) ? child.material : [child.material];
-      mats.forEach((mat) => {
-        if (mat instanceof THREE.MeshStandardMaterial) {
-          mat.envMapIntensity = isDark ? 1.2 : 0.8;
-        }
-      });
-    });
-  }, [scene, isDark]);
-
-  return (
-    <group ref={groupRef} position={[0, -1.0, 0]} scale={1.0}>
-      <primitive object={scene} />
-    </group>
-  );
-}
-
-/* ── Floating orbs around the avatar ──────────────────────── */
-function FloatingOrb({
-  position, color, emissive, size, isDark,
+/* ─────────────────────────────────────────────────────────────
+   Floating orb — pure CSS animated dot
+───────────────────────────────────────────────────────────── */
+function Orb({
+  style,
+  color,
+  size,
+  delay,
 }: {
-  position: [number, number, number];
+  style: React.CSSProperties;
   color: string;
-  emissive: string;
   size: number;
-  isDark: boolean;
+  delay: number;
 }) {
   return (
-    <Float speed={2.5} rotationIntensity={0.5} floatIntensity={0.8}>
-      <mesh position={position}>
-        <sphereGeometry args={[size, 16, 16]} />
-        <meshStandardMaterial
-          color={color}
-          emissive={emissive}
-          emissiveIntensity={isDark ? 1.0 : 0.45}
-          metalness={0.9}
-          roughness={0.05}
-          transparent
-          opacity={0.82}
-        />
-      </mesh>
-    </Float>
+    <motion.div
+      className="absolute rounded-full pointer-events-none"
+      style={{
+        width: size,
+        height: size,
+        background: color,
+        boxShadow: `0 0 ${size * 1.5}px ${color}`,
+        ...style,
+      }}
+      animate={{
+        y: [0, -12, 0],
+        x: [0, 5, 0],
+        scale: [1, 1.08, 1],
+        opacity: [0.7, 1, 0.7],
+      }}
+      transition={{
+        duration: 3 + delay,
+        repeat: Infinity,
+        ease: "easeInOut",
+        delay,
+      }}
+    />
   );
 }
 
-/* ── Lights ─────────────────────────────────────────────────── */
-function AvatarLights({ isDark }: { isDark: boolean }) {
-  const keyRef = useRef<THREE.SpotLight>(null);
-
-  useFrame((state) => {
-    if (!keyRef.current) return;
-    keyRef.current.position.x = Math.sin(state.clock.elapsedTime * 0.2) * 1.5;
-  });
-
-  return isDark ? (
-    <>
-      <ambientLight intensity={0.3} color="#1a1040" />
-      <spotLight
-        ref={keyRef}
-        position={[2.5, 4, 3]}
-        angle={0.45}
-        penumbra={0.6}
-        intensity={60}
-        color="#c084fc"
-        castShadow
-        shadow-mapSize={[512, 512]}
-      />
-      <pointLight position={[-2.5, 2, 1.5]} intensity={30} color="#38bdf8" distance={8} decay={2} />
-      <pointLight position={[0,   -1, 2.5]} intensity={20} color="#ec4899" distance={6} decay={2} />
-    </>
-  ) : (
-    <>
-      <ambientLight intensity={1.2} color="#f0f4ff" />
-      <directionalLight position={[3, 6, 5]}  intensity={2.5} color="#ffffff" castShadow />
-      <pointLight       position={[-2, 3, 2]}  intensity={25} color="#a78bfa" distance={9}  decay={2} />
-      <pointLight       position={[2, -1, 3]}  intensity={18} color="#f9a8d4" distance={7}  decay={2} />
-    </>
-  );
-}
-
-/* ── Placeholder shown while /avatar.glb loads ─────────────── */
-function AvatarPlaceholder({ isDark }: { isDark: boolean }) {
-  const ref = useRef<THREE.Mesh>(null);
-  useFrame((s) => {
-    if (ref.current) ref.current.rotation.y = s.clock.elapsedTime * 0.4;
-  });
-
-  return (
-    <Float speed={1} floatIntensity={0.4}>
-      <mesh ref={ref} position={[0, 0, 0]}>
-        <torusKnotGeometry args={[0.5, 0.18, 128, 32]} />
-        <meshStandardMaterial
-          color={isDark ? "#7c3aed" : "#a78bfa"}
-          metalness={0.9}
-          roughness={0.05}
-          emissive={isDark ? "#4c1d95" : "#6d28d9"}
-          emissiveIntensity={isDark ? 0.6 : 0.3}
-        />
-      </mesh>
-    </Float>
-  );
-}
-
-/* ── Scene ──────────────────────────────────────────────────── */
-function AvatarScene({ isDark, hasGlb }: { isDark: boolean; hasGlb: boolean }) {
-  return (
-    <>
-      <AvatarLights isDark={isDark} />
-      <Environment preset={isDark ? "night" : "city"} />
-
-      {hasGlb ? (
-        <Suspense fallback={<AvatarPlaceholder isDark={isDark} />}>
-          <RPMAvatar isDark={isDark} />
-        </Suspense>
-      ) : (
-        <AvatarPlaceholder isDark={isDark} />
-      )}
-
-      {/* Decorative orbs */}
-      <FloatingOrb position={[-1.1,  0.8, 0.3]} color={isDark ? "#c084fc" : "#a78bfa"} emissive={isDark ? "#a855f7" : "#7c3aed"} size={0.075} isDark={isDark} />
-      <FloatingOrb position={[ 1.0,  1.1, -0.2]} color={isDark ? "#38bdf8" : "#7dd3fc"} emissive={isDark ? "#0ea5e9" : "#0284c7"} size={0.065} isDark={isDark} />
-      <FloatingOrb position={[ 1.2, -0.4, 0.5]} color={isDark ? "#34d399" : "#6ee7b7"} emissive={isDark ? "#10b981" : "#059669"} size={0.060} isDark={isDark} />
-      <FloatingOrb position={[-0.9, -0.6, 0.4]} color={isDark ? "#f472b6" : "#f9a8d4"} emissive={isDark ? "#ec4899" : "#db2777"} size={0.055} isDark={isDark} />
-
-      <ContactShadows
-        position={[0, -1.5, 0]}
-        opacity={isDark ? 0.45 : 0.18}
-        scale={4}
-        blur={2.5}
-        far={4}
-        color={isDark ? "#7c3aed" : "#a78bfa"}
-      />
-    </>
-  );
-}
-
-/* ── Export ─────────────────────────────────────────────────── */
+/* ─────────────────────────────────────────────────────────────
+   Main tilt card — mouse-reactive 3D parallax
+───────────────────────────────────────────────────────────── */
 export default function AvatarCanvas() {
-  const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme !== "light";
+  const cardRef = useRef<HTMLDivElement>(null);
 
-  /* Check if /avatar.glb exists (avoids R3F error if file not dropped yet) */
-  const [hasGlb, setHasGlb] = useState(false);
-  useEffect(() => {
-    fetch("/avatar.glb", { method: "HEAD" })
-      .then((r) => { if (r.ok) setHasGlb(true); })
-      .catch(() => {});
-  }, []);
+  /* Raw mouse position relative to card center (-0.5 → 0.5) */
+  const rawX = useMotionValue(0);
+  const rawY = useMotionValue(0);
+
+  /* Spring-smoothed values */
+  const springX = useSpring(rawX, { stiffness: 120, damping: 18 });
+  const springY = useSpring(rawY, { stiffness: 120, damping: 18 });
+
+  /* Map to rotation and depth transforms */
+  const rotateY  = useTransform(springX, [-0.5, 0.5], [-22, 22]);
+  const rotateX  = useTransform(springY, [-0.5, 0.5], [14, -14]);
+  const glareX   = useTransform(springX, [-0.5, 0.5], ["-30%", "130%"]);
+  const glareY   = useTransform(springY, [-0.5, 0.5], ["-30%", "130%"]);
+
+  /* Orb parallax — move opposite direction for depth */
+  const orb1X = useTransform(springX, [-0.5, 0.5], ["-8px", "8px"]);
+  const orb1Y = useTransform(springY, [-0.5, 0.5], ["-6px", "6px"]);
+  const orb2X = useTransform(springX, [-0.5, 0.5], ["10px", "-10px"]);
+  const orb2Y = useTransform(springY, [-0.5, 0.5], ["8px", "-8px"]);
+
+  function onMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    const rect = cardRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    rawX.set((e.clientX - rect.left) / rect.width - 0.5);
+    rawY.set((e.clientY - rect.top)  / rect.height - 0.5);
+  }
+
+  function onMouseLeave() {
+    rawX.set(0);
+    rawY.set(0);
+  }
 
   return (
-    <div className="w-full h-full">
-      <Canvas
-        shadows
-        camera={{ position: [0, 0.4, 2.8], fov: 42 }}
-        gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping }}
-        dpr={[1, 1.5]}
+    <div
+      className="relative w-full h-full flex items-center justify-center"
+      onMouseMove={onMouseMove}
+      onMouseLeave={onMouseLeave}
+    >
+      {/* ── Floating orbs — behind the card with parallax ── */}
+      <motion.div
+        className="absolute pointer-events-none"
+        style={{ x: orb1X, y: orb1Y }}
       >
-        <AvatarScene isDark={isDark} hasGlb={hasGlb} />
-      </Canvas>
+        <Orb style={{ top: "8%",  left: "0%"  }} color="#c084fc" size={18} delay={0}   />
+        <Orb style={{ top: "70%", left: "5%"  }} color="#f472b6" size={13} delay={0.8} />
+        <Orb style={{ top: "20%", right: "2%" }} color="#38bdf8" size={15} delay={1.2} />
+        <Orb style={{ top: "80%", right: "6%" }} color="#34d399" size={11} delay={0.4} />
+      </motion.div>
+
+      <motion.div
+        className="absolute pointer-events-none"
+        style={{ x: orb2X, y: orb2Y }}
+      >
+        <Orb style={{ top: "45%", left:  "-2%" }} color="#a78bfa" size={10} delay={1.6} />
+        <Orb style={{ top: "10%", right:  "1%" }} color="#facc15" size={9}  delay={2.1} />
+      </motion.div>
+
+      {/* ── 3D tilt card ── */}
+      <motion.div
+        ref={cardRef}
+        style={{
+          rotateY,
+          rotateX,
+          transformStyle: "preserve-3d",
+          transformPerspective: 900,
+        }}
+        className="relative w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 cursor-none select-none"
+      >
+        {/* Aurora glow ring — rotates on hover via CSS */}
+        <motion.div
+          className="absolute inset-[-18%] rounded-full pointer-events-none"
+          style={{
+            background:
+              "conic-gradient(from 0deg, #c084fc, #38bdf8, #34d399, #f472b6, #c084fc)",
+            opacity: 0.35,
+            filter: "blur(18px)",
+          }}
+          animate={{ rotate: 360 }}
+          transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+        />
+
+        {/* Thin spinning border ring */}
+        <motion.div
+          className="absolute inset-[-6px] rounded-full pointer-events-none"
+          style={{
+            background:
+              "conic-gradient(from 0deg, #c084fc88, #38bdf888, #34d39988, #f472b688, #c084fc88)",
+            padding: "2px",
+            borderRadius: "9999px",
+          }}
+          animate={{ rotate: 360 }}
+          transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
+        >
+          <div className="w-full h-full rounded-full bg-background" />
+        </motion.div>
+
+        {/* Avatar image — transparent bg, no black corners */}
+        <div className="relative w-full h-full rounded-full overflow-hidden bg-transparent">
+          <Image
+            src={AvatarSvg}
+            alt="Mohamed Ali Bouzir"
+            fill
+            className="object-contain"
+            priority
+          />
+        </div>
+
+        {/* Glare highlight — moves with mouse */}
+        <motion.div
+          className="absolute inset-0 rounded-full pointer-events-none"
+          style={{
+            background: `radial-gradient(circle at ${glareX} ${glareY}, rgba(255,255,255,0.18) 0%, transparent 65%)`,
+          }}
+        />
+      </motion.div>
     </div>
   );
 }
-
-/* Pre-load only if file exists (safe — useGLTF.preload silently fails) */
-// useGLTF.preload("/avatar.glb");

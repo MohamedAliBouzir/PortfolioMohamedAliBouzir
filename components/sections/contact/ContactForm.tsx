@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Mail, Github, Linkedin, Send } from "lucide-react";
 import { useUIStore } from "@/store/ui.store";
+import GradientButton from "@/components/ui/GradientButton";
 
 const socials = [
   { label: "GitHub", href: "https://github.com/MohamedAliBouzir", icon: Github },
@@ -134,14 +135,12 @@ export default function ContactForm() {
           />
         </div>
 
-        <motion.button
+        <GradientButton
           type="submit"
           disabled={sending || sent}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
           onMouseEnter={() => setCursorVariant("hover")}
           onMouseLeave={() => setCursorVariant("default")}
-          className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl aurora-gradient text-white font-semibold text-sm disabled:opacity-60 transition-opacity cursor-none"
+          className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-semibold text-sm disabled:opacity-60 cursor-none"
         >
           {sent ? (
             "Message sent! ✓"
@@ -152,7 +151,7 @@ export default function ContactForm() {
               Send message <Send className="w-4 h-4" />
             </>
           )}
-        </motion.button>
+        </GradientButton>
       </motion.form>
     </div>
   );

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { Check, X } from "lucide-react";
 import type { TPricingPlan } from "@/types/pricings-types";
 import { useUIStore } from "@/store/ui.store";
+import GradientButton from "@/components/ui/GradientButton";
 
 interface PricingCardProps {
   plan: TPricingPlan;
@@ -74,16 +75,22 @@ export default function PricingCard({ plan, index }: PricingCardProps) {
       </ul>
 
       {/* CTA */}
-      <a
-        href="#contact"
-        className={`mt-auto w-full text-center py-3 rounded-xl font-semibold text-sm transition-all duration-300 ${
-          plan.popular
-            ? "aurora-gradient text-white hover:opacity-90"
-            : "glass border border-border/50 hover:border-accent/40 hover:text-accent"
-        }`}
-      >
-        Get started
-      </a>
+      {plan.popular ? (
+        <GradientButton
+          as="a"
+          href="#contact"
+          className="mt-auto w-full text-center py-3 rounded-xl font-semibold text-sm"
+        >
+          Get started
+        </GradientButton>
+      ) : (
+        <a
+          href="#contact"
+          className="mt-auto w-full text-center py-3 rounded-xl font-semibold text-sm glass border border-border/50 hover:border-accent/40 hover:text-accent transition-all duration-300"
+        >
+          Get started
+        </a>
+      )}
     </motion.div>
   );
 }
