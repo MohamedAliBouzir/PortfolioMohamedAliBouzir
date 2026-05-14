@@ -154,7 +154,7 @@ function ModalInner({ tech, ip, onClose }: { tech: ITechnologiesInterface; ip: s
             <div className="w-3 h-3 rounded-full bg-[#28c840]" />
           </div>
           <span className="flex-1 text-center text-xs font-mono" style={{ color: MUTED }}>
-            terminal — ssh root@{ip}
+            terminal — ssh ThisIsNotYourIP@{ip}
           </span>
           <Image
             src={tech.Icon} alt={tech.Title}
@@ -171,7 +171,7 @@ function ModalInner({ tech, ip, onClose }: { tech: ITechnologiesInterface; ip: s
         >
           {/* Static prompt */}
           <div className="flex gap-1 font-mono text-[13px] mb-1">
-            <span style={{ color: ROOT }}>root</span>
+            <span style={{ color: ROOT }}>ThisIsNotYourIP</span>
             <span style={{ color: DIM }}>@</span>
             <span style={{ color: PATH }}>{ip}</span>
             <span style={{ color: DIM }}>:~#</span>
@@ -198,7 +198,7 @@ function ModalInner({ tech, ip, onClose }: { tech: ITechnologiesInterface; ip: s
           {/* Final blinking cursor after all lines done */}
           {!currentLine && (
             <div className="flex gap-1 font-mono text-[13px] mt-2">
-              <span style={{ color: ROOT }}>root</span>
+              <span style={{ color: ROOT }}>ThisIsNotYourIP</span>
               <span style={{ color: DIM }}>@</span>
               <span style={{ color: PATH }}>{ip}</span>
               <span style={{ color: DIM }}>:~#</span>

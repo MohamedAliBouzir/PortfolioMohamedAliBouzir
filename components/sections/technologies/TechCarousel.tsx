@@ -170,7 +170,7 @@ export default function TechCarousel({ items }: Props) {
               }}
             >
               <div className="flex items-center gap-1">
-                <span style={{ color: ROOT }}>root</span>
+                <span style={{ color: ROOT }}>ThisIsNotYourIP</span>
                 <span style={{ color: "#555" }}>@</span>
                 <span style={{ color: PATH }}>{ip}</span>
                 <span style={{ color: "#555" }}>:~#</span>
