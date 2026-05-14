@@ -1,19 +1,132 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useEffect, useCallback } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import Image from "next/image";
-import AvatarSvg from "@/assets/images/svg/avatar-moha.svg";
+import { useTheme } from "next-themes";
 
-/* ─────────────────────────────────────────────────────────────
-   Floating orb — pure CSS animated dot
-───────────────────────────────────────────────────────────── */
-function Orb({
-  style,
-  color,
-  size,
-  delay,
-}: {
+/* ── Matrix rain canvas ─────────────────────────────────────── */
+const CHARS = "アWイMエOカJクZケコGシスセソタHツテNトQナニヌネノ0123456789ABCDEF∆∇∑∏∞≈ΩΨΦ";
+const FONT_SIZE = 13;
+
+interface Column {
+  x: number;
+  y: number;
+  speed: number;
+  chars: string[];
+  length: number;
+  colorIdx: number;
+  opacity: number;
+}
+
+/* dark: vivid matrix greens   |   light: muted forest greens */
+const PALETTE_DARK  = ["#00FF41", "#00e039", "#00c231", "#39ff14", "#7fff7f", "#00FF7F"];
+const PALETTE_LIGHT = ["#059669", "#047857", "#065f46", "#10b981", "#34d399", "#6ee7b7"];
+
+function initColumns(w: number, h: number, paletteLen: number): Column[] {
+  const cols = Math.floor(w / FONT_SIZE);
+  return Array.from({ length: cols }, (_, i) => ({
+    x: i * FONT_SIZE,
+    y: Math.random() * -h,
+    speed: 0.8 + Math.random() * 1.6,
+    chars: Array.from({ length: 32 }, () => CHARS[Math.floor(Math.random() * CHARS.length)]),
+    length: 8 + Math.floor(Math.random() * 18),
+    colorIdx: Math.floor(Math.random() * paletteLen),
+    opacity: 0.3 + Math.random() * 0.7,
+  }));
+}
+
+function MatrixCanvas({ isDark }: { isDark: boolean }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const colsRef   = useRef<Column[]>([]);
+  const rafRef    = useRef<number>(0);
+  const isDarkRef = useRef(isDark);
+
+  useEffect(() => { isDarkRef.current = isDark; }, [isDark]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const resize = () => {
+      canvas.width  = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+      colsRef.current = initColumns(canvas.width, canvas.height, PALETTE_DARK.length);
+    };
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(canvas);
+
+    const tick = () => {
+      const dark = isDarkRef.current;
+      const pal  = dark ? PALETTE_DARK : PALETTE_LIGHT;
+      const w = canvas.width;
+      const h = canvas.height;
+
+      /* fade trail */
+      ctx.fillStyle = dark ? "rgba(0,0,0,0.18)" : "rgba(238,242,235,0.22)";
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.font = `${FONT_SIZE}px monospace`;
+
+      colsRef.current.forEach((col) => {
+        col.y += col.speed;
+
+        /* randomise a char occasionally */
+        if (Math.random() < 0.04) {
+          const idx = Math.floor(Math.random() * col.chars.length);
+          col.chars[idx] = CHARS[Math.floor(Math.random() * CHARS.length)];
+        }
+
+        for (let j = 0; j < col.length; j++) {
+          const cy = col.y - j * FONT_SIZE;
+          if (cy < 0 || cy > h) continue;
+
+          /* head char — bright white/light spike */
+          if (j === 0) {
+            ctx.fillStyle = dark ? `rgba(255,255,255,${col.opacity})` : `rgba(26,46,26,${col.opacity})`;
+          } else {
+            /* tail fades out */
+            const fade = (1 - j / col.length) * col.opacity;
+            const hex  = Math.round(fade * 255).toString(16).padStart(2, "0");
+            ctx.fillStyle = `${pal[col.colorIdx]}${hex}`;
+          }
+
+          ctx.fillText(col.chars[j % col.chars.length], col.x, cy);
+        }
+
+        /* reset column when it scrolls past */
+        if (col.y - col.length * FONT_SIZE > h) {
+          col.y      = -FONT_SIZE * 4;
+          col.speed  = 0.8 + Math.random() * 1.6;
+          col.length = 8 + Math.floor(Math.random() * 18);
+          col.colorIdx = Math.floor(Math.random() * pal.length);
+          col.opacity  = 0.3 + Math.random() * 0.7;
+        }
+      });
+
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(rafRef.current);
+      ro.disconnect();
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      className="absolute inset-0 w-full h-full rounded-full pointer-events-none"
+    />
+  );
+}
+
+/* ── Floating orb ───────────────────────────────────────────── */
+function Orb({ style, color, size, delay }: {
   style: React.CSSProperties;
   color: string;
   size: number;
@@ -22,66 +135,50 @@ function Orb({
   return (
     <motion.div
       className="absolute rounded-full pointer-events-none"
-      style={{
-        width: size,
-        height: size,
-        background: color,
-        boxShadow: `0 0 ${size * 1.5}px ${color}`,
-        ...style,
-      }}
-      animate={{
-        y: [0, -12, 0],
-        x: [0, 5, 0],
-        scale: [1, 1.08, 1],
-        opacity: [0.7, 1, 0.7],
-      }}
-      transition={{
-        duration: 3 + delay,
-        repeat: Infinity,
-        ease: "easeInOut",
-        delay,
-      }}
+      style={{ width: size, height: size, background: color, boxShadow: `0 0 ${size * 1.5}px ${color}`, ...style }}
+      animate={{ y: [0, -12, 0], x: [0, 5, 0], scale: [1, 1.08, 1], opacity: [0.7, 1, 0.7] }}
+      transition={{ duration: 3 + delay, repeat: Infinity, ease: "easeInOut", delay }}
     />
   );
 }
 
-/* ─────────────────────────────────────────────────────────────
-   Main tilt card — mouse-reactive 3D parallax
-───────────────────────────────────────────────────────────── */
+/* ── Main component ─────────────────────────────────────────── */
 export default function AvatarCanvas() {
   const cardRef = useRef<HTMLDivElement>(null);
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme !== "light";
 
-  /* Raw mouse position relative to card center (-0.5 → 0.5) */
+  /* mouse tracking */
   const rawX = useMotionValue(0);
   const rawY = useMotionValue(0);
-
-  /* Spring-smoothed values */
   const springX = useSpring(rawX, { stiffness: 120, damping: 18 });
   const springY = useSpring(rawY, { stiffness: 120, damping: 18 });
 
-  /* Map to rotation and depth transforms */
-  const rotateY  = useTransform(springX, [-0.5, 0.5], [-22, 22]);
-  const rotateX  = useTransform(springY, [-0.5, 0.5], [14, -14]);
-  const glareX   = useTransform(springX, [-0.5, 0.5], ["-30%", "130%"]);
-  const glareY   = useTransform(springY, [-0.5, 0.5], ["-30%", "130%"]);
+  const rotateY = useTransform(springX, [-0.5, 0.5], [-22, 22]);
+  const rotateX = useTransform(springY, [-0.5, 0.5], [14, -14]);
+  const glareX  = useTransform(springX, [-0.5, 0.5], ["-30%", "130%"]);
+  const glareY  = useTransform(springY, [-0.5, 0.5], ["-30%", "130%"]);
+  const orb1X   = useTransform(springX, [-0.5, 0.5], ["-8px", "8px"]);
+  const orb1Y   = useTransform(springY, [-0.5, 0.5], ["-6px", "6px"]);
+  const orb2X   = useTransform(springX, [-0.5, 0.5], ["10px", "-10px"]);
+  const orb2Y   = useTransform(springY, [-0.5, 0.5], ["8px", "-8px"]);
 
-  /* Orb parallax — move opposite direction for depth */
-  const orb1X = useTransform(springX, [-0.5, 0.5], ["-8px", "8px"]);
-  const orb1Y = useTransform(springY, [-0.5, 0.5], ["-6px", "6px"]);
-  const orb2X = useTransform(springX, [-0.5, 0.5], ["10px", "-10px"]);
-  const orb2Y = useTransform(springY, [-0.5, 0.5], ["8px", "-8px"]);
-
-  function onMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+  const onMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     const rect = cardRef.current?.getBoundingClientRect();
     if (!rect) return;
-    rawX.set((e.clientX - rect.left) / rect.width - 0.5);
+    rawX.set((e.clientX - rect.left) / rect.width  - 0.5);
     rawY.set((e.clientY - rect.top)  / rect.height - 0.5);
-  }
+  }, [rawX, rawY]);
 
-  function onMouseLeave() {
+  const onMouseLeave = useCallback(() => {
     rawX.set(0);
     rawY.set(0);
-  }
+  }, [rawX, rawY]);
+
+  /* ring colours — matrix green */
+  const ringA = isDark ? "#00FF41" : "#059669";
+  const ringB = isDark ? "#00c231" : "#047857";
+  const ringC = isDark ? "#39ff14" : "#10b981";
 
   return (
     <div
@@ -89,43 +186,30 @@ export default function AvatarCanvas() {
       onMouseMove={onMouseMove}
       onMouseLeave={onMouseLeave}
     >
-      {/* ── Floating orbs — behind the card with parallax ── */}
-      <motion.div
-        className="absolute pointer-events-none"
-        style={{ x: orb1X, y: orb1Y }}
-      >
-        <Orb style={{ top: "8%",  left: "0%"  }} color="#c084fc" size={18} delay={0}   />
-        <Orb style={{ top: "70%", left: "5%"  }} color="#f472b6" size={13} delay={0.8} />
-        <Orb style={{ top: "20%", right: "2%" }} color="#38bdf8" size={15} delay={1.2} />
-        <Orb style={{ top: "80%", right: "6%" }} color="#34d399" size={11} delay={0.4} />
+      {/* Floating orbs behind card */}
+      <motion.div className="absolute pointer-events-none" style={{ x: orb1X, y: orb1Y }}>
+        <Orb style={{ top: "8%",  left: "0%"   }} color={isDark ? "#00FF41" : "#059669"} size={18} delay={0}   />
+        <Orb style={{ top: "70%", left: "5%"   }} color={isDark ? "#00c231" : "#047857"} size={13} delay={0.8} />
+        <Orb style={{ top: "20%", right: "2%"  }} color={isDark ? "#39ff14" : "#10b981"} size={15} delay={1.2} />
+        <Orb style={{ top: "80%", right: "6%"  }} color={isDark ? "#7fff7f" : "#34d399"} size={11} delay={0.4} />
+      </motion.div>
+      <motion.div className="absolute pointer-events-none" style={{ x: orb2X, y: orb2Y }}>
+        <Orb style={{ top: "45%", left:  "-2%" }} color={isDark ? "#00FF41" : "#059669"} size={10} delay={1.6} />
+        <Orb style={{ top: "10%", right:  "1%" }} color={isDark ? "#00e039" : "#065f46"} size={9}  delay={2.1} />
       </motion.div>
 
-      <motion.div
-        className="absolute pointer-events-none"
-        style={{ x: orb2X, y: orb2Y }}
-      >
-        <Orb style={{ top: "45%", left:  "-2%" }} color="#a78bfa" size={10} delay={1.6} />
-        <Orb style={{ top: "10%", right:  "1%" }} color="#facc15" size={9}  delay={2.1} />
-      </motion.div>
-
-      {/* ── 3D tilt card ── */}
+      {/* 3D tilt card */}
       <motion.div
         ref={cardRef}
-        style={{
-          rotateY,
-          rotateX,
-          transformStyle: "preserve-3d",
-          transformPerspective: 900,
-        }}
+        style={{ rotateY, rotateX, transformStyle: "preserve-3d", transformPerspective: 900 }}
         className="relative w-64 h-64 sm:w-72 sm:h-72 lg:w-80 lg:h-80 cursor-none select-none"
       >
-        {/* Aurora glow ring — rotates on hover via CSS */}
+        {/* Spinning matrix-green aurora ring */}
         <motion.div
           className="absolute inset-[-18%] rounded-full pointer-events-none"
           style={{
-            background:
-              "conic-gradient(from 0deg, #c084fc, #38bdf8, #34d399, #f472b6, #c084fc)",
-            opacity: 0.35,
+            background: `conic-gradient(from 0deg, ${ringA}, ${ringB}, ${ringC}, ${ringA}88, ${ringB}, ${ringA})`,
+            opacity: 0.4,
             filter: "blur(18px)",
           }}
           animate={{ rotate: 360 }}
@@ -136,8 +220,7 @@ export default function AvatarCanvas() {
         <motion.div
           className="absolute inset-[-6px] rounded-full pointer-events-none"
           style={{
-            background:
-              "conic-gradient(from 0deg, #c084fc88, #38bdf888, #34d39988, #f472b688, #c084fc88)",
+            background: `conic-gradient(from 0deg, ${ringA}88, ${ringB}55, ${ringC}88, ${ringA}33, ${ringA}88)`,
             padding: "2px",
             borderRadius: "9999px",
           }}
@@ -147,22 +230,46 @@ export default function AvatarCanvas() {
           <div className="w-full h-full rounded-full bg-background" />
         </motion.div>
 
-        {/* Avatar image — transparent bg, no black corners */}
-        <div className="relative w-full h-full rounded-full overflow-hidden bg-transparent">
+        {/* Circle container: matrix rain bg + avatar on top */}
+        <div className="relative w-full h-full rounded-full overflow-hidden">
+          {/* Matrix rain background */}
+          <div
+            className="absolute inset-0 rounded-full"
+            style={{ background: isDark ? "#000000" : "#eef2eb" }}
+          />
+          <MatrixCanvas isDark={isDark} />
+
+          {/* Avatar — object-position pushes face to center */}
           <Image
-            src={AvatarSvg}
+            src="/MyAvatar.png"
             alt="Mohamed Ali Bouzir"
             fill
-            className="object-contain"
+            className="relative z-10 object-cover object-[center_8%]"
             priority
+          />
+
+          {/* Matrix green glare that follows the cursor shine */}
+          <motion.div
+            className="absolute inset-0 rounded-full pointer-events-none z-20"
+            style={{
+              background: useTransform(
+                [springX, springY],
+                ([x, y]: number[]) => {
+                  const px = Math.round((x + 0.5) * 100);
+                  const py = Math.round((y + 0.5) * 100);
+                  const shine = isDark ? "rgba(0,255,65,0.22)" : "rgba(5,150,105,0.18)";
+                  return `radial-gradient(circle at ${px}% ${py}%, ${shine} 0%, transparent 65%)`;
+                }
+              ),
+            }}
           />
         </div>
 
-        {/* Glare highlight — moves with mouse */}
+        {/* White/dark glare highlight on the card surface */}
         <motion.div
-          className="absolute inset-0 rounded-full pointer-events-none"
+          className="absolute inset-0 rounded-full pointer-events-none z-30"
           style={{
-            background: `radial-gradient(circle at ${glareX} ${glareY}, rgba(255,255,255,0.18) 0%, transparent 65%)`,
+            background: `radial-gradient(circle at ${glareX} ${glareY}, rgba(255,255,255,0.13) 0%, transparent 60%)`,
           }}
         />
       </motion.div>
