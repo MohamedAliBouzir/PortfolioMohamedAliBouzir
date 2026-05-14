@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import Image from "next/image";
 import { useTheme } from "next-themes";
@@ -20,6 +20,8 @@ interface Project {
 interface ProjectCardProps {
   project: Project;
   index: number;
+  onOpen: () => void;
+  layoutId: string;
 }
 
 const typeColors: Record<string, string> = {
@@ -88,13 +90,15 @@ function initNebulae(w: number, h: number, paletteLen: number): Nebula[] {
 }
 
 /* ── Component ──────────────────────────────────────────────────────────── */
-export default function ProjectCard({ project, index }: ProjectCardProps) {
+export default function ProjectCard({ project, index, onOpen, layoutId }: ProjectCardProps) {
   const setCursorVariant = useUIStore((s) => s.setCursorVariant);
   const { resolvedTheme } = useTheme();
 
-  /* keep a ref so the canvas tick always reads current theme without restart */
-  const isDarkRef = useRef(true);
+  const [mounted, setMounted] = useState(false);
+  const isDarkRef = useRef(resolvedTheme !== "light");
+
   useEffect(() => {
+    setMounted(true);
     isDarkRef.current = resolvedTheme !== "light";
   }, [resolvedTheme]);
 
@@ -227,16 +231,17 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
     setCursorVariant("default");
   }, [opacityMV, setCursorVariant]);
 
-  /* live glow colour tracks theme */
-  const glowColor = resolvedTheme === "light" ? GLOW_LIGHT : GLOW_DARK;
+  /* live glow colour tracks theme via CSS variables */
 
   return (
     <motion.div
+      layoutId={layoutId}
       initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.6, delay: (index % 3) * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
       whileHover={{ y: -6 }}
+      onClick={onOpen}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
       className="group relative glass rounded-2xl border border-border/50 transition-colors duration-700 overflow-hidden cursor-none h-full"
@@ -250,7 +255,10 @@ export default function ProjectCard({ project, index }: ProjectCardProps) {
       {/* Border glow — fades with spring */}
       <motion.div
         className="absolute inset-0 rounded-2xl pointer-events-none"
-        style={{ boxShadow: `inset 0 0 0 1px ${glowColor}`, opacity }}
+        style={{ 
+          boxShadow: "inset 0 0 0 1px var(--glow-color)", 
+          opacity: mounted ? opacity : 0 
+        }}
       />
 
       {/* Content */}

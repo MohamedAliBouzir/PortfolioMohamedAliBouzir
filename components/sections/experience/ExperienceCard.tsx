@@ -63,7 +63,7 @@ export default function ExperienceCard({ experience, index, isLeft }: Experience
                 alt={experience.societeName}
                 width={44}
                 height={44}
-                className="object-cover w-full h-full"
+                className="object-cover"
               />
             ) : (
               <LogoPlaceholder3D initials={experience.societeName} size={44} />

@@ -1,15 +1,38 @@
+"use client";
+
 import { Suspense, lazy } from "react";
+import dynamic from "next/dynamic";
 import SectionWrapper from "@/components/common/SectionWrapper";
 import SectionHeader from "@/components/common/SectionHeader";
 import SectionSkeleton from "@/components/common/SectionSkeleton";
+import {
+  FrontEndTechnologiesData,
+  BackEndTechnologiesData,
+  MobileTechnologiesData,
+  DataBaseData,
+} from "@/assets/data/technologies-data";
 
 const TechnologiesGrid = lazy(() => import("./TechnologiesGrid"));
+const TechStarField = dynamic(() => import("./TechStarField"), { ssr: false });
+
+/* collect all icons for the star field */
+const allIcons = [
+  ...FrontEndTechnologiesData,
+  ...BackEndTechnologiesData,
+  ...MobileTechnologiesData,
+  ...DataBaseData,
+].map((t) => t.Icon);
 
 export default function TechnologiesSection() {
   return (
     <SectionWrapper id="technologies">
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="aurora-orb-1 absolute top-[10%] right-[5%] w-[400px] h-[400px] rounded-full bg-aurora-violet/10 blur-[120px]" />
+      {/* Space background — floating tech icons as stars */}
+      <TechStarField icons={allIcons} />
+
+      {/* Aurora orbs */}
+      <div className="absolute inset-0 z-[1] pointer-events-none overflow-hidden">
+        <div className="aurora-orb-1 absolute top-[10%] right-[5%] w-[400px] h-[400px] rounded-full bg-aurora-teal/8 blur-[120px]" />
+        <div className="aurora-orb-2 absolute bottom-[15%] left-[8%] w-[320px] h-[320px] rounded-full bg-aurora-emerald/6 blur-[100px]" />
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10 flex flex-col gap-12">

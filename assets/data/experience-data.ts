@@ -313,9 +313,9 @@ export const experienceData: IExperiencesInterface[] = [
   {
     id: 6,
     logo: Digital,
-    type: "Internship",
+    type: "Part-time",
     presence: "Hybrid",
-    societeName: "Digital Market",
+    societeName: "Freelance",
     startDate: "Jun 2022",
     endDate: "Aug 2022",
     position: "Mobile Developer",

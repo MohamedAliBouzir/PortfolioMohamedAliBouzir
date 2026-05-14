@@ -1,13 +1,12 @@
 "use client";
 
 import { usePortfolioStore } from "@/store/portfolio.store";
-import TechCategory from "./TechCategory";
+import TechCarousel from "./TechCarousel";
 
-const categories = [
-  { key: "frontend" as const, label: "Front-End" },
-  { key: "backend" as const, label: "Back-End" },
-  { key: "mobile" as const, label: "Mobile" },
-  { key: "database" as const, label: "Databases & DevOps" },
+const ROWS = [
+  { keys: ["frontend", "mobile"] as const, label: "Front-End & Mobile" },
+  { keys: ["backend"]            as const, label: "Back-End"            },
+  { keys: ["database"]           as const, label: "Databases & DevOps"  },
 ];
 
 export default function TechnologiesGrid() {
@@ -15,14 +14,20 @@ export default function TechnologiesGrid() {
 
   return (
     <div className="flex flex-col gap-10 w-full">
-      {categories.map(({ key, label }, i) => (
-        <TechCategory
-          key={key}
-          label={label}
-          items={technologies[key]}
-          delay={i * 0.1}
-        />
-      ))}
+      {ROWS.map(({ keys, label }) => {
+        const items = keys.flatMap((k) => technologies[k]);
+        return (
+          <div key={label} className="flex flex-col gap-4">
+            <div className="flex items-center gap-3 px-1">
+              <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-accent">
+                {label}
+              </span>
+              <div className="flex-1 h-px bg-gradient-to-r from-accent/30 to-transparent" />
+            </div>
+            <TechCarousel items={items} />
+          </div>
+        );
+      })}
     </div>
   );
 }

@@ -3,7 +3,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Check, X, Zap } from "lucide-react";
 import type { TPricingPlan } from "@/types/pricings-types";
 import { useUIStore } from "@/store/ui.store";
@@ -25,25 +25,21 @@ const SHADOW_NONE        = "0 0 0px 0px rgba(0,255,65,0)";
 export default function PricingCard({ plan, index }: PricingCardProps) {
   const setCursorVariant = useUIStore((s) => s.setCursorVariant);
   const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const isDark = resolvedTheme !== "light";
   const [hovered, setHovered] = useState(false);
 
-  const shadowRest  = isDark ? SHADOW_REST_DARK  : SHADOW_REST_LIGHT;
-  const shadowHover = isDark ? SHADOW_HOVER_DARK : SHADOW_HOVER_LIGHT;
-
   const shadow = hovered
-    ? shadowHover
+    ? "var(--pricing-shadow-hover)"
     : plan.popular
-    ? shadowRest
-    : SHADOW_NONE;
+    ? "var(--pricing-shadow-rest)"
+    : "0 0 0px 0px rgba(0,0,0,0)";
 
   /* side card background — opaque on hover so the card behind never bleeds through */
   const sideCardStyle = !plan.popular ? {
-    background: hovered
-      ? isDark
-        ? "rgba(10,10,10,0.97)"
-        : "rgba(238,242,235,0.97)"
-      : undefined,
+    background: hovered ? "var(--pricing-side-bg)" : undefined,
     backdropFilter: "blur(12px) saturate(1.4)",
     WebkitBackdropFilter: "blur(12px) saturate(1.4)",
     transition: "background 0.4s ease",
@@ -70,17 +66,11 @@ export default function PricingCard({ plan, index }: PricingCardProps) {
       }`}
       style={
         plan.popular
-          ? isDark
-            ? {
-                background: "linear-gradient(145deg, rgba(0,255,65,0.06) 0%, rgba(0,0,0,0.80) 50%, rgba(0,194,49,0.05) 100%)",
-                backdropFilter: "blur(24px)",
-                WebkitBackdropFilter: "blur(24px)",
-              }
-            : {
-                background: "linear-gradient(145deg, rgba(5,150,105,0.18) 0%, rgba(220,240,230,0.97) 35%, rgba(238,242,235,0.97) 65%, rgba(4,120,87,0.15) 100%)",
-                backdropFilter: "blur(24px)",
-                WebkitBackdropFilter: "blur(24px)",
-              }
+          ? {
+              background: "var(--pricing-popular-bg)",
+              backdropFilter: "blur(24px)",
+              WebkitBackdropFilter: "blur(24px)",
+            }
           : sideCardStyle
       }
     >

@@ -244,6 +244,7 @@ export default function AvatarCanvas() {
             src="/MyAvatar.png"
             alt="Mohamed Ali Bouzir"
             fill
+            sizes="(max-width: 768px) 100vw, 320px"
             className="relative z-10 object-cover object-[center_8%]"
             priority
           />

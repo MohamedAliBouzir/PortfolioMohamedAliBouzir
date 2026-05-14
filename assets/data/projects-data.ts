@@ -14,8 +14,8 @@ export const projectsData = [
     link: "https://issatso.ieee.tn/",
     type: ["web"],
     logo: Ieee,
-    description: "",
-    technologies : ["React", "SASS", "Apollo"],
+    description: "Official website for the IEEE ISSATSo Student Branch. Built a fully responsive platform to showcase events, news, and chapter activities for the engineering student community. Integrated Apollo GraphQL for data fetching and used SASS for a maintainable, modular styling architecture.",
+    technologies: ["React", "SASS", "Apollo", "GraphQL", "Git"],
   },
   {
     id: 2,
@@ -23,8 +23,8 @@ export const projectsData = [
     link: "https://issatso.ieee.tn/ma",
     type: ["web"],
     logo: IeeeMa,
-    description: "",
-    technologies : [],
+    description: "Sub-portal for the IEEE ISSATSo Membership & Affinity group. Handles member registration flows, event listings, and dynamic content management for the affinity chapter.",
+    technologies: ["React", "GraphQL", "Apollo", "SASS"],
   },
   {
     id: 3,
@@ -32,8 +32,8 @@ export const projectsData = [
     link: null,
     type: ["mobile"],
     logo: Fermli,
-    description: "",
-    technologies : [],
+    description: "A mobile application designed to connect local farmers with buyers, enabling real-time product listings, order management, and direct communication. Built with a focus on offline-first capability and low-bandwidth environments.",
+    technologies: ["React Native", "TypeScript", "REST API", "AsyncStorage"],
   },
   {
     id: 4,
@@ -41,8 +41,8 @@ export const projectsData = [
     link: null,
     type: ["mobile"],
     logo: Store2000,
-    description: "",
-    technologies : [],
+    description: "Hybrid mobile ERP app built for the Store 2000 technical team. Empowers field staff to check tool availability, report tasks, create quotations on the spot, and sync everything back to Odoo v14 in real time. Supports iOS and Android via Ionic Capacitor.",
+    technologies: ["React", "Ionic", "Capacitor", "TypeScript", "Odoo", "Python", "OpenAPI"],
   },
   {
     id: 5,
@@ -50,8 +50,8 @@ export const projectsData = [
     link: null,
     type: ["web"],
     logo: Elissabet,
-    description: "",
-    technologies : [],
+    description: "Online sports betting and casino web application. Delivers real-time odds, live match tracking, casino game interfaces, and a full authentication flow. Optimised for performance under high concurrent traffic with SWR-based data synchronisation.",
+    technologies: ["React", "TypeScript", "SWR", "Tailwind CSS", "Daisy UI", "GraphQL", "Apollo"],
   },
   {
     id: 6,
@@ -59,8 +59,8 @@ export const projectsData = [
     link: null,
     type: ["web", "cli", "mobile", "desktop"],
     logo: D2M,
-    description: "",
-    technologies : [],
+    description: "Comprehensive high-performance data migration platform with web, CLI, mobile, and desktop interfaces. Automated the full ETL pipeline — eliminating manual intervention, providing real-time progress tracking, and generating detailed migration reports. Outperformed all major market solutions: migrated a 20M-row, 588-column (~100 GB) Oracle table in just 12 minutes vs 2–3.5 hours for Talend, Spark, and ODI.",
+    technologies: ["Python", "Pandas", "Cx_Oracle", "FastAPI", "WebSocket", "React", "TypeScript", "PWA", "MultiProcessing", "MultiThreading"],
   },
   {
     id: 7,
@@ -68,8 +68,8 @@ export const projectsData = [
     link: "https://www.sodecor-tunisie.com/",
     type: ["web"],
     logo: Sodecor,
-    description: "",
-    technologies : [],
+    description: "Corporate website for Sodecor Tunisia, a decoration and interior design company. Built a pixel-perfect, fully responsive showcase site with CMS integration via SMOFT ERP, allowing the client to manage content, products, and pages without developer intervention.",
+    technologies: ["HTML", "CSS", "JavaScript", "jQuery", "PHP", "MySQL", "SMOFT ERP"],
   },
   {
     id: 8,
@@ -77,8 +77,8 @@ export const projectsData = [
     link: "https://www.auto-expert.tn/",
     type: ["web"],
     logo: Expert,
-    description: "",
-    technologies : [],
+    description: "Automotive marketplace and service platform for Expert Auto Tunisia. Features vehicle listings, service booking, and a CMS-backed admin panel. Integrated with SMOFT ERP for content and inventory management.",
+    technologies: ["HTML", "CSS", "JavaScript", "jQuery", "PHP", "MySQL", "SMOFT ERP"],
   },
   {
     id: 9,
@@ -86,8 +86,8 @@ export const projectsData = [
     link: "https://www.effia.be/",
     type: ["web"],
     logo: Effia,
-    description: "",
-    technologies : [],
+    description: "High-traffic parking management platform serving 1000+ active users with real-time space reservations, online payments, and live availability tracking. Built a fully responsive React frontend backed by a scalable Express/Node.js API with MySQL, Socket.io for real-time updates, and Redux for state management.",
+    technologies: ["React", "TypeScript", "Material-UI", "Redux", "Socket.io", "Express.js", "Node.js", "MySQL", "Lodash"],
   },
   {
     id: 10,
@@ -95,7 +95,7 @@ export const projectsData = [
     link: "https://ppms-aladin-test.azurewebsites.net/",
     type: ["web"],
     logo: Effia,
-    description: "",
-    technologies: [],
+    description: "Staff-only restricted portal for managing the Effia Be platform. Covers the full parking space lifecycle (insertion, updates, deletions), user role management, pricing configuration across logical and legal entities, billing, offers, reservations, and subscription tracking. Includes Jasmin (invoice management) and Jafar (PMS hardware integration) sub-modules.",
+    technologies: ["React", "TypeScript", "Material-UI", "Redux", "Express.js", "Node.js", "MySQL", "Git", "GitLab"],
   }
 ];
