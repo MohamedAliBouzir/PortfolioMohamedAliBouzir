@@ -203,9 +203,11 @@
                       radial-gradient(ellipse at 80% 90%, rgba(16, 185, 129, 0.05) 0%, transparent 50%);
   }
 
-  /* ── Hide native cursor everywhere — custom canvas cursor takes over ── */
-  *, *::before, *::after {
-    cursor: none !important;
+  /* ── Hide native cursor on desktop only — mobile keeps native touch cursor ── */
+  @media (min-width: 1024px) {
+    *, *::before, *::after {
+      cursor: none !important;
+    }
   }
 
   .dark body {

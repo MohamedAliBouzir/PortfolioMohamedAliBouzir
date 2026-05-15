@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback, useState } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import Image from "next/image";
 import { useTheme } from "next-themes";
@@ -146,7 +146,9 @@ function Orb({ style, color, size, delay }: {
 export default function AvatarCanvas() {
   const cardRef = useRef<HTMLDivElement>(null);
   const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme !== "light";
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const isDark = mounted ? resolvedTheme === "dark" : false;
 
   /* mouse tracking */
   const rawX = useMotionValue(0);

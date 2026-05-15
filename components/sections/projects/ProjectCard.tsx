@@ -95,11 +95,11 @@ export default function ProjectCard({ project, index, onOpen, layoutId }: Projec
   const { resolvedTheme } = useTheme();
 
   const [mounted, setMounted] = useState(false);
-  const isDarkRef = useRef(resolvedTheme !== "light");
+  const isDarkRef = useRef(resolvedTheme === "dark");
 
   useEffect(() => {
     setMounted(true);
-    isDarkRef.current = resolvedTheme !== "light";
+    isDarkRef.current = resolvedTheme === "dark";
   }, [resolvedTheme]);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -272,6 +272,7 @@ export default function ProjectCard({ project, index, onOpen, layoutId }: Projec
               width={40}
               height={40}
               className="object-contain"
+              style={{ width: "auto", height: "auto", maxWidth: 40, maxHeight: 40 }}
             />
           </div>
 

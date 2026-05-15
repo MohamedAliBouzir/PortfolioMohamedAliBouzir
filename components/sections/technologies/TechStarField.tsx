@@ -33,8 +33,8 @@ export default function TechStarField({ icons }: Props) {
   const imgsRef     = useRef<HTMLImageElement[]>([]);
   const mouseRef    = useRef({ x: -9999, y: -9999 });
   const { resolvedTheme } = useTheme();
-  const isDarkRef   = useRef(resolvedTheme !== "light");
-  useEffect(() => { isDarkRef.current = resolvedTheme !== "light"; }, [resolvedTheme]);
+  const isDarkRef   = useRef(resolvedTheme === "dark");
+  useEffect(() => { isDarkRef.current = resolvedTheme === "dark"; }, [resolvedTheme]);
 
   /* preload once */
   useEffect(() => {

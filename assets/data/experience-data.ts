@@ -142,7 +142,7 @@ export const experienceData: IExperiencesInterface[] = [
     societeName: "Branding Route",
     startDate: "Feb 2025",
     endDate: "Jul 2025",
-    position: "Front-end Engineer",
+    position: "IT Consultant",
     description: `<div id="muscle-meet">
                     <h2>Muscle Meet – Mobile App Refactor & Backoffice</h2>
 

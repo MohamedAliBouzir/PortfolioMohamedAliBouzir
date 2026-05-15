@@ -27,8 +27,7 @@ export default function PricingCard({ plan, index }: PricingCardProps) {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-
-  const isDark = resolvedTheme !== "light";
+  const isDark = mounted && resolvedTheme === "dark";
   const [hovered, setHovered] = useState(false);
 
   const shadow = hovered

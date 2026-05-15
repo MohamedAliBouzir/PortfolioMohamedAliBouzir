@@ -133,7 +133,7 @@ function drawMoon(
 export default function AuroraCursor() {
   const cursorVariant = useUIStore((s) => s.cursorVariant);
   const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme !== "light";
+  const isDark = resolvedTheme === "dark";
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const rafRef    = useRef<number>(0);
@@ -215,11 +215,17 @@ export default function AuroraCursor() {
   return (
     <canvas
       ref={canvasRef}
+      className="hidden lg:block"
       style={{
         position: "fixed",
         pointerEvents: "none",
         zIndex: 99999,
-        imageRendering: "pixelated",
+        width: 140,
+        height: 140,
+        top: -200,
+        left: -200,
+        borderRadius: "50%",
+        background: "transparent",
       }}
     />
   );

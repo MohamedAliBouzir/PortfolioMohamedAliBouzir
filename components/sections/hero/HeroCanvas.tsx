@@ -475,7 +475,7 @@ function Scene({ isDark }: { isDark: boolean }) {
 ───────────────────────────────────────────────────────────────── */
 export default function HeroCanvas() {
   const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme !== "light";
+  const isDark = resolvedTheme === "dark";
 
   return (
     <div className="absolute inset-0 w-full h-full">

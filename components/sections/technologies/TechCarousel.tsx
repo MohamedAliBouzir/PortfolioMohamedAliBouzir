@@ -38,16 +38,23 @@ function ensureKeyframes() {
 
 export default function TechCarousel({ items }: Props) {
   const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme !== "light";
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const isDark = mounted && resolvedTheme === "dark";
   const setCursorVariant = useUIStore((s) => s.setCursorVariant);
 
   const [paused,  setPaused]   = useState(false);
+  const [ready,   setReady]    = useState(false);   // false until keyframes injected
   const [hovered, setHovered]  = useState<number | null>(null);
   const [selected, setSelected] = useState<ITechnologiesInterface | null>(null);
   const [ip, setIp]             = useState("192.168.1.1");
   const [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
 
-  useEffect(() => { ensureKeyframes(); }, []);
+  useEffect(() => {
+    ensureKeyframes();
+    /* one rAF delay ensures the <style> is parsed before animation starts */
+    requestAnimationFrame(() => setReady(true));
+  }, []);
 
   useEffect(() => {
     fetch("https://api.ipify.org?format=json")
@@ -77,13 +84,16 @@ export default function TechCarousel({ items }: Props) {
         className="relative w-full overflow-hidden"
         style={{ maskImage: "linear-gradient(90deg,transparent 0%,black 8%,black 92%,transparent 100%)" }}
       >
-        {/* Pure CSS animation — animationPlayState pauses in-place, no jump */}
+        {/* Pure CSS animation — individual longhand props avoid React shorthand-conflict warning */}
         <div
           style={{
             display: "flex",
             gap: 16,
             width: "max-content",
-            animation: "carousel-scroll 40s linear infinite",
+            animationName: ready ? "carousel-scroll" : "none",
+            animationDuration: "40s",
+            animationTimingFunction: "linear",
+            animationIterationCount: "infinite",
             animationPlayState: paused ? "paused" : "running",
             willChange: "transform",
           }}
@@ -97,12 +107,14 @@ export default function TechCarousel({ items }: Props) {
                 style={{
                   width: 110, height: 110,
                   background: isDark
-                    ? isHov ? "rgba(0,255,65,0.08)" : "rgba(10,10,10,0.7)"
-                    : isHov ? "rgba(5,150,105,0.08)" : "rgba(238,242,235,0.8)",
-                  border: `1px solid ${isHov
-                    ? (isDark ? GREEN : "#059669")
-                    : (isDark ? "#27272a" : "#c6d9be")}`,
-                  boxShadow: isHov ? `0 0 24px -4px ${isDark ? GREEN : "#059669"}55` : "none",
+                    ? isHov ? "rgba(0,255,65,0.06)" : "#18181b"
+                    : isHov ? "#ffffff"              : "#ffffff",
+                  border: `1px solid ${isDark
+                    ? (isHov ? GREEN           : "#27272a")
+                    : (isHov ? "#059669"       : "#e2e8f0")}`,
+                  boxShadow: isHov
+                    ? `0 0 24px -4px ${isDark ? GREEN : "#059669"}44`
+                    : isDark ? "none" : "0 2px 8px rgba(0,0,0,0.06)",
                   transition: "background 0.25s, border-color 0.25s, box-shadow 0.25s",
                   cursor: "none",
                 }}
@@ -117,16 +129,24 @@ export default function TechCarousel({ items }: Props) {
                     alt={tech.Title}
                     fill
                     className="object-contain"
-                    style={isDark && DARK_LOGOS.has(tech.Title)
-                      ? { filter: "brightness(0) saturate(100%) invert(52%) sepia(98%) saturate(420%) hue-rotate(90deg) brightness(1.1)" }
-                      : undefined}
+                    style={{
+                      /* dark mode: dim invisible logos to green, others grayscale at rest → color on hover */
+                      ...(isDark && DARK_LOGOS.has(tech.Title)
+                        ? { filter: "brightness(0) saturate(100%) invert(52%) sepia(98%) saturate(420%) hue-rotate(90deg) brightness(1.1)" }
+                        : isDark && !isHov
+                        ? { filter: "grayscale(60%) opacity(0.6)" }
+                        : isDark && isHov
+                        ? { filter: "none", transition: "filter 0.2s" }
+                        : undefined),
+                      transition: "filter 0.25s",
+                    }}
                   />
                 </div>
 
                 <span
                   className="text-[11px] font-mono text-center leading-tight px-2 w-full truncate"
                   style={{
-                    color: isHov ? (isDark ? GREEN : "#059669") : (isDark ? "#a1a1aa" : "#4a6741"),
+                    color: isHov ? (isDark ? GREEN : "#059669") : (isDark ? "#71717a" : "#64748b"),
                     transition: "color 0.2s",
                   }}
                 >

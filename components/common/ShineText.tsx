@@ -17,10 +17,10 @@ const LIGHT = { base: "#059669", dim: "#047857", shine: "#1a2e1a" };
 export default function ShineText({ children, className = "", as: Tag = "span" }: ShineTextProps) {
   const ref = useRef<HTMLElement>(null);
   const { resolvedTheme } = useTheme();
-  const isDarkRef = useRef(resolvedTheme !== "light");
+  const isDarkRef = useRef(resolvedTheme === "dark");
 
   useEffect(() => {
-    isDarkRef.current = resolvedTheme !== "light";
+    isDarkRef.current = resolvedTheme === "dark";
     apply(null); // re-paint on theme switch
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resolvedTheme]);

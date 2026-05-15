@@ -15,7 +15,7 @@ export default function ProjectsSection() {
       <div className="container mx-auto px-4 sm:px-6 relative z-10 flex flex-col gap-12">
         <SectionHeader
           label="Work"
-          title="Selected"
+          title="Some"
           highlight="Projects"
           description="A curated selection of products I've built — from enterprise ERPs to public-facing web apps."
         />
