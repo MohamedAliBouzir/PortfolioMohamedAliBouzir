@@ -5,6 +5,7 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import { ThemeProvider } from "@/provider/theme-provider";
 import PageWrapper from "@/components/layout/PageWrapper";
+import AvatarWidget from "@/components/common/AvatarWidget";
 
 const caveat = Caveat({
   subsets: ["latin"],
@@ -43,6 +44,7 @@ export default function RootLayout({
             <Header />
           </div>
           <PageWrapper>{children}</PageWrapper>
+          <AvatarWidget />
         </ThemeProvider>
       </body>
     </html>
