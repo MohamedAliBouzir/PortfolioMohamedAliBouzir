@@ -56,13 +56,13 @@ export default function ExperienceCard({ experience, index, isLeft }: Experience
           onClick={() => setExpanded((v) => !v)}
           aria-expanded={expanded}
         >
-          <div className="w-11 h-11 rounded-xl overflow-hidden bg-muted/50 border border-border/50 flex-shrink-0 flex items-center justify-center">
+          <div className="w-11 h-11 rounded-xl overflow-hidden bg-muted/50 border border-border/50 flex-shrink-0 flex items-center justify-center relative">
             {experience.logo ? (
               <Image
                 src={experience.logo}
                 alt={experience.societeName}
-                width={44}
-                height={44}
+                fill
+                sizes="44px"
                 className="object-cover"
               />
             ) : (

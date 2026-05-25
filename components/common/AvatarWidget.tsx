@@ -116,6 +116,7 @@ export default function AvatarWidget() {
               src="/MyAvatarHI.png"
               alt="Mohamed Ali waving"
               fill
+              sizes="96px"
               className="object-contain drop-shadow-xl"
               priority
             />

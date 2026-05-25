@@ -63,7 +63,7 @@ export default function ProjectsGrid() {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.92 }}
                 transition={{ duration: 0.35 }}
-                className="h-full"
+                className="h-full rounded-2xl relative hover:z-10"
               >
                 <ProjectCard
                   project={project}

@@ -10,8 +10,9 @@ import type { StaticImageData } from "next/image";
 /* ── types ─────────────────────────────────────────────────────── */
 interface Project {
   id: number; name: string; link: string | null;
-  type: string[]; logo: StaticImageData | string;
+  type: string[]; logo: StaticImageData | string | null;
   description: string; technologies: string[];
+  restricted?: boolean;
 }
 interface ProjectModalProps {
   project: Project | null; open: boolean;
@@ -25,6 +26,11 @@ const ROOT  = "#ff6b6b";
 const PATH  = "#61afef";
 const MUTED = "#666";
 
+/* restricted palette */
+const RED      = "#ff3333";
+const RED_DIM  = "#992222";
+const RED_MID  = "#cc2222";
+
 type TabKey = "general" | "details" | "technologies";
 type Stage  = "desktop" | "boot" | TabKey;
 
@@ -33,61 +39,103 @@ const typeColors: Record<string, string> = {
   mobile:  "bg-aurora-violet/15 text-aurora-violet border-aurora-violet/30",
   cli:     "bg-aurora-emerald/15 text-aurora-emerald border-aurora-emerald/30",
   desktop: "bg-aurora-pink/15 text-aurora-pink border-aurora-pink/30",
+  pwa:     "bg-aurora-pink/15 text-aurora-pink border-aurora-pink/30",
 };
 
 /* ── line type ───────────────────────────────────────────────────── */
 type TLine = { text: string; color: string };
-const g = (t: string): TLine => ({ text: t, color: GREEN });
-const d = (t: string): TLine => ({ text: t, color: DIM });
-const p = (t: string): TLine => ({ text: t, color: PATH });
-const r = (t: string): TLine => ({ text: t, color: ROOT });
-const e = ():          TLine => ({ text: "",  color: GREEN });
+
+function makeTokens(restricted: boolean) {
+  const G  = restricted ? RED     : GREEN;
+  const D  = restricted ? RED_DIM : DIM;
+  const P  = restricted ? RED_MID : PATH;
+  const R  = restricted ? RED     : ROOT;
+  const g = (t: string): TLine => ({ text: t, color: G });
+  const d = (t: string): TLine => ({ text: t, color: D });
+  const p = (t: string): TLine => ({ text: t, color: P });
+  const r = (t: string): TLine => ({ text: t, color: R });
+  const e = ():          TLine => ({ text: "",  color: G });
+  return { g, d, p, r, e, G, D, P, R };
+}
 
 /* ── scripts ────────────────────────────────────────────────────── */
 function bootScript(project: Project, ip: string): TLine[] {
+  const { g, d, e } = makeTokens(!!project.restricted);
   const slug = project.name.toLowerCase().replace(/\s+/g, "-");
-  return [
-    g(`ThisIsNotYourIP@${ip}:~$ xdg-open http://localhost:3000/${slug}`),
-    e(),
-    d("Opening browser..."),
-  ];
+  return project.restricted
+    ? [
+        { text: `ROOT@${ip}:~# ACCESS LEVEL: TOP SECRET`, color: RED },
+        e(),
+        { text: "  ██████╗ ███████╗███████╗████████╗██████╗ ", color: RED_DIM },
+        { text: "  ██╔══██╗██╔════╝██╔════╝╚══██╔══╝██╔══██╗", color: RED_DIM },
+        { text: "  ██████╔╝█████╗  ███████╗   ██║   ██████╔╝", color: RED_MID },
+        { text: "  ██╔══██╗██╔══╝  ╚════██║   ██║   ██╔══██╗", color: RED_MID },
+        { text: "  ██║  ██║███████╗███████║   ██║   ██║  ██║", color: RED },
+        { text: "  ╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝   ╚═╝  ╚═╝", color: RED },
+        e(),
+        { text: "  [!] CLASSIFIED — NATIONAL CONFIDENTIALITY DIRECTIVE", color: RED },
+        { text: "  [!] Unauthorized access is a criminal offense.", color: RED_DIM },
+        e(),
+        { text: `ROOT@${ip}:~# sudo open --restricted ${slug}/`, color: RED_MID },
+        e(),
+        { text: "  WARNING: Content subject to national security protocols.", color: RED_DIM },
+      ]
+    : [
+        g(`ThisIsNotYourIP@${ip}:~$ xdg-open http://localhost:3000/${slug}`),
+        e(),
+        d("Opening browser..."),
+      ];
 }
 function generalScript(project: Project, ip: string): TLine[] {
+  const { g, d, p, e } = makeTokens(!!project.restricted);
   const slug = project.name.toLowerCase().replace(/\s+/g, "_");
+  const cmd  = project.restricted ? "ROOT" : "ThisIsNotYourIP";
   return [
     p("┌─[ GENERAL ]─────────────────────────────"),
-    g(`ThisIsNotYourIP@${ip}:~$ cat ${slug}/README.md`),
+    g(`${cmd}@${ip}:~$ cat ${slug}/README.md`),
     e(),
     p(`# ${project.name}`),
     e(),
     g(`  type     : ${project.type.join(", ")}`),
-    project.link ? g(`  live     : ${project.link}`) : d("  live     : [private / NDA]"),
+    project.restricted
+      ? { text: "  clearance : CLASSIFIED / NDA", color: RED }
+      : project.link ? g(`  live     : ${project.link}`) : d("  live     : [private / NDA]"),
     e(),
     d("└──────────────────────────────────────────"),
   ];
 }
 function detailsScript(project: Project, ip: string): TLine[] {
-  const slug = project.name.toLowerCase().replace(/\s+/g, "_");
+  const { g, d, p, e } = makeTokens(!!project.restricted);
+  const slug    = project.name.toLowerCase().replace(/\s+/g, "_");
+  const cmd     = project.restricted ? "ROOT" : "ThisIsNotYourIP";
   const wrapped = project.description.match(/.{1,56}(\s|$)/g) ?? [project.description];
   return [
     p("┌─[ DETAILS ]─────────────────────────────"),
-    g(`ThisIsNotYourIP@${ip}:~$ cat ${slug}/DETAILS.md`),
+    g(`${cmd}@${ip}:~$ cat ${slug}/DETAILS.md`),
     e(), p("# Overview"), e(),
-    ...wrapped.map((l) => d(`  ${l.trim()}`)),
+    ...(project.restricted
+      ? [
+          { text: "  [REDACTED — Engineering overview only]", color: RED_DIM },
+          e(),
+          ...wrapped.map((l): TLine => ({ text: `  ${l.trim()}`, color: RED_DIM })),
+        ]
+      : wrapped.map((l) => d(`  ${l.trim()}`))),
     e(), d("└──────────────────────────────────────────"),
   ];
 }
 function techScript(project: Project, ip: string): TLine[] {
+  const { g, d, p, r, e } = makeTokens(!!project.restricted);
   const slug = project.name.toLowerCase().replace(/\s+/g, "_");
+  const cmd  = project.restricted ? "ROOT" : "ThisIsNotYourIP";
   return [
     p("┌─[ TECHNOLOGIES ]────────────────────────"),
-    g(`ThisIsNotYourIP@${ip}:~$ cat ${slug}/STACK.md`),
+    g(`${cmd}@${ip}:~$ cat ${slug}/STACK.md`),
     e(), p("# Tech Stack"), e(),
     ...project.technologies.map((t, i) => ({
       text: `  ${i === project.technologies.length - 1 ? "└─" : "├─"} ${t}`,
-      color: i % 2 === 0 ? GREEN : DIM,
+      color: project.restricted ? (i % 2 === 0 ? RED : RED_DIM) : (i % 2 === 0 ? GREEN : DIM),
     })),
-    e(), r(`ThisIsNotYourIP@${ip}:~$ exit  # All done`),
+    e(), r(`${cmd}@${ip}:~$ exit  # All done`),
     d("└──────────────────────────────────────────"),
   ];
 }
@@ -133,7 +181,7 @@ function LineStream({
 }: {
   lines: TLine[];
   tabKey: TabKey | "boot";
-  cache: React.MutableRefObject<Map<string, TLine[]>>;
+  cache: React.RefObject<Map<string, TLine[]>>;
   onFinished?: () => void;
 }) {
   const scrollRef      = useRef<HTMLDivElement>(null);
@@ -187,14 +235,15 @@ function LineStream({
 }
 
 /* ── NextBtn ─────────────────────────────────────────────────────── */
-function NextBtn({ label, onClick }: { label: string; onClick: () => void }) {
+function NextBtn({ label, onClick, restricted }: { label: string; onClick: () => void; restricted?: boolean }) {
+  const c = restricted ? RED : GREEN;
   return (
     <motion.button
       className="mt-3 inline-flex items-center gap-2 font-mono text-sm px-4 py-2 rounded-lg flex-shrink-0"
-      style={{ color: GREEN, background: "rgba(0,255,65,0.07)", border: `1px solid ${GREEN}44`, cursor: "none" }}
+      style={{ color: c, background: `${c}12`, border: `1px solid ${c}44`, cursor: "none" }}
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      whileHover={{ background: "rgba(0,255,65,0.15)", scale: 1.03, boxShadow: `0 0 18px -4px ${GREEN}55` }}
+      whileHover={{ background: `${c}25`, scale: 1.03, boxShadow: `0 0 18px -4px ${c}55` }}
       whileTap={{ scale: 0.97 }}
       transition={{ duration: 0.2 }}
       onClick={onClick}
@@ -216,6 +265,7 @@ function BrowserWindow({
 }) {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
+  const isRestricted = !!project.restricted;
   const [dropOpen, setDropOpen] = useState(false);
   const slug = project.name.toLowerCase().replace(/\s+/g, "-");
 
@@ -231,7 +281,6 @@ function BrowserWindow({
     technologies: `${project.name} — Stack`,
   };
 
-  /* close dropdown when clicking outside */
   const containerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!dropOpen) return;
@@ -242,46 +291,56 @@ function BrowserWindow({
     return () => window.removeEventListener("mousedown", h);
   }, [dropOpen]);
 
-  /* theme-aware colors */
-  const chromeBg   = isDark ? "#1a1a1a" : "#f0f0f0";
-  const chromeBd   = isDark ? "#2a2a2a" : "#d0d0d0";
-  const urlBg      = isDark ? "#111"    : "#ffffff";
-  const urlBd      = isDark ? "#333"    : "#c8c8c8";
-  const urlText    = isDark ? "#888"    : "#555";
-  const pageBg     = isDark ? "#080808" : "#f8f8f8";
-  const titleColor = isDark ? "#ffffff" : "#111111";
-  const dropBg     = isDark ? "#111"    : "#ffffff";
-  const dropBd     = isDark ? "#444"    : "#ccc";
-  const dropItem   = isDark ? "#1a1a1a" : "#f0f0f0";
-  const accent     = isDark ? GREEN     : "#059669";
+  /* colors — red override for restricted */
+  const chromeBg   = isRestricted ? "#120000"  : (isDark ? "#1a1a1a" : "#f0f0f0");
+  const chromeBd   = isRestricted ? "#3a0000"  : (isDark ? "#2a2a2a" : "#d0d0d0");
+  const urlBg      = isRestricted ? "#0a0000"  : (isDark ? "#111"    : "#ffffff");
+  const urlBd      = isRestricted ? "#550000"  : (isDark ? "#333"    : "#c8c8c8");
+  const urlText    = isRestricted ? "#883333"  : (isDark ? "#888"    : "#555");
+  const pageBg     = isRestricted ? "#0a0000"  : (isDark ? "#080808" : "#f8f8f8");
+  const titleColor = isRestricted ? RED        : (isDark ? "#ffffff" : "#111111");
+  const dropBg     = isRestricted ? "#0f0000"  : (isDark ? "#111"    : "#ffffff");
+  const dropBd     = isRestricted ? "#440000"  : (isDark ? "#444"    : "#ccc");
+  const dropItem   = isRestricted ? "#1a0000"  : (isDark ? "#1a1a1a" : "#f0f0f0");
+  const accent     = isRestricted ? RED        : (isDark ? GREEN     : "#059669");
+  const pathColor  = isRestricted ? RED_MID    : PATH;
 
   return (
     <div ref={containerRef} className="flex flex-col h-full rounded-lg"
       style={{ border: `1px solid ${chromeBd}`, background: chromeBg, overflow: "visible" }}>
-      {/* Browser chrome */}
-      <div className="flex-shrink-0 flex items-center gap-2 px-3 py-[7px] border-b"
+
+      {/* Restricted: pulsing red scanlines */}
+      {isRestricted && (
+        <div className="absolute inset-0 pointer-events-none rounded-lg z-0"
+          style={{ background: "repeating-linear-gradient(0deg,rgba(255,0,0,0.03) 0px,rgba(255,0,0,0.03) 1px,transparent 1px,transparent 3px)" }}
+        />
+      )}
+
+      {/* Chrome bar */}
+      <div className="relative z-10 flex-shrink-0 flex items-center gap-2 px-3 py-[7px] border-b"
         style={{ background: chromeBg, borderColor: chromeBd }}>
         <div className="flex gap-1.5 flex-shrink-0">
-          <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
-          <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
-          <div className="w-2.5 h-2.5 rounded-full bg-[#28c840]" />
+          <div className="w-2.5 h-2.5 rounded-full" style={{ background: isRestricted ? "#ff3333" : "#ff5f57" }} />
+          <div className="w-2.5 h-2.5 rounded-full" style={{ background: isRestricted ? "#550000" : "#febc2e" }} />
+          <div className="w-2.5 h-2.5 rounded-full" style={{ background: isRestricted ? "#220000" : "#28c840" }} />
         </div>
 
-        {/* URL bar */}
         <div className="relative flex-1">
           <button
             className="w-full flex items-center gap-1 rounded-md px-3 py-[3px] text-[11px] font-mono text-left"
             style={{ background: urlBg, border: `1px solid ${urlBd}`, cursor: "none" }}
             onClick={() => setDropOpen((v) => !v)}
           >
-            <span style={{ color: accent }}>http://</span>
-            <span style={{ color: urlText }}>localhost:3000/</span>
-            <span style={{ color: PATH }}>{slug}</span>
-            <span style={{ color: PATH }}>{paths.find((p) => p.key === activeTab)?.path}</span>
+            {isRestricted
+              ? <span style={{ color: RED }}>⚠ CLASSIFIED://</span>
+              : <span style={{ color: accent }}>http://</span>
+            }
+            <span style={{ color: urlText }}>{isRestricted ? "restricted.gov/" : "localhost:3000/"}</span>
+            <span style={{ color: pathColor }}>{slug}</span>
+            <span style={{ color: pathColor }}>{paths.find((p) => p.key === activeTab)?.path}</span>
             <span className="ml-auto" style={{ color: urlText }}>▾</span>
           </button>
 
-          {/* Dropdown */}
           <AnimatePresence>
             {dropOpen && (
               <motion.div
@@ -301,20 +360,20 @@ function BrowserWindow({
                       disabled={!unlocked}
                       className="w-full flex items-center gap-2 px-3 py-2 text-[11px] font-mono text-left"
                       style={{
-                        background: active ? (isDark ? "rgba(0,255,65,0.07)" : "rgba(5,150,105,0.07)") : "transparent",
-                        color: !unlocked ? (isDark ? "#333" : "#bbb") : active ? accent : urlText,
+                        background: active ? `${accent}12` : "transparent",
+                        color: !unlocked ? "#330000" : active ? accent : urlText,
                         borderBottom: `1px solid ${dropItem}`,
                         cursor: unlocked ? "none" : "not-allowed",
                         transition: "background 0.15s",
                       }}
                       onClick={() => { if (unlocked) { onNavSelect(key); setDropOpen(false); } }}
                     >
-                      <span style={{ color: unlocked ? (active ? accent : DIM) : (isDark ? "#2a2a2a" : "#ccc") }}>
+                      <span style={{ color: unlocked ? (active ? accent : RED_DIM) : "#220000" }}>
                         {unlocked ? "●" : "○"}
                       </span>
-                      <span style={{ color: urlText }}>localhost:3000/{slug}</span>
-                      <span style={{ color: !unlocked ? (isDark ? "#2a2a2a" : "#ccc") : active ? accent : PATH }}>{path}</span>
-                      {!unlocked && <span className="ml-auto text-[10px]" style={{ color: isDark ? "#333" : "#bbb" }}>locked</span>}
+                      <span style={{ color: urlText }}>{isRestricted ? "restricted.gov/" : `localhost:3000/${slug}`}</span>
+                      <span style={{ color: !unlocked ? "#220000" : active ? accent : pathColor }}>{path}</span>
+                      {!unlocked && <span className="ml-auto text-[10px]" style={{ color: "#440000" }}>locked</span>}
                     </button>
                   );
                 })}
@@ -330,7 +389,7 @@ function BrowserWindow({
       <AnimatePresence mode="wait">
         <motion.div
           key={activeTab}
-          className="flex-1 flex flex-col items-center justify-center gap-5 p-6 overflow-hidden"
+          className="relative z-10 flex-1 flex flex-col items-center justify-center gap-5 p-6 overflow-hidden"
           style={{ background: pageBg }}
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -338,39 +397,74 @@ function BrowserWindow({
           transition={{ duration: 0.3 }}
           onClick={() => setDropOpen(false)}
         >
+          {/* Logo box */}
           <motion.div
-            className="rounded-2xl flex items-center justify-center flex-shrink-0"
+            className="rounded-2xl flex items-center justify-center flex-shrink-0 relative"
             style={{
               width: 110, height: 110,
-              background: isDark ? "rgba(0,255,65,0.04)" : "rgba(5,150,105,0.06)",
-              border: `1px solid ${isDark ? "rgba(0,255,65,0.12)" : "rgba(5,150,105,0.2)"}`,
+              background: `${accent}08`,
+              border: `1px solid ${accent}22`,
             }}
-            animate={{ boxShadow: isDark
-              ? ["0 0 30px -8px rgba(0,255,65,0.15)", "0 0 50px -4px rgba(0,255,65,0.3)", "0 0 30px -8px rgba(0,255,65,0.15)"]
-              : ["0 0 30px -8px rgba(5,150,105,0.1)", "0 0 50px -4px rgba(5,150,105,0.22)", "0 0 30px -8px rgba(5,150,105,0.1)"]
-            }}
-            transition={{ duration: 3, repeat: Infinity }}
+            animate={{ boxShadow: [
+              `0 0 30px -8px ${accent}30`,
+              `0 0 50px -4px ${accent}55`,
+              `0 0 30px -8px ${accent}30`,
+            ]}}
+            transition={{ duration: isRestricted ? 1.5 : 3, repeat: Infinity }}
           >
-            <Image src={project.logo} alt={project.name} width={75} height={75} className="object-contain" style={{ width: "auto", height: "auto", maxWidth: 75, maxHeight: 75 }} />
+            {isRestricted ? (
+              <motion.span
+                className="text-4xl"
+                animate={{ opacity: [1, 0.3, 1] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              >
+                ⛔
+              </motion.span>
+            ) : project.logo ? (
+              <Image src={project.logo} alt={project.name} fill sizes="110px" className="object-contain p-4" />
+            ) : (
+              <span className="text-3xl font-bold font-mono" style={{ color: accent }}>{project.name.charAt(0)}</span>
+            )}
           </motion.div>
 
+          {/* Title + badges */}
           <div className="text-center">
             <h2 className="font-bold text-sm" style={{ color: titleColor }}>{titles[activeTab]}</h2>
             <div className="flex flex-wrap gap-1 justify-center mt-1.5">
               {project.type.map((t) => (
-                <span key={t} className={`text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full border ${typeColors[t] ?? "bg-muted text-muted-foreground border-border"}`}>{t}</span>
+                isRestricted ? (
+                  <span key={t} className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full border"
+                    style={{ background: "rgba(255,51,51,0.1)", color: RED, borderColor: "rgba(255,51,51,0.35)" }}>
+                    {t}
+                  </span>
+                ) : (
+                  <span key={t} className={`text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full border ${typeColors[t] ?? "bg-muted text-muted-foreground border-border"}`}>{t}</span>
+                )
               ))}
             </div>
           </div>
 
+          {/* Restricted warning */}
+          {isRestricted && (
+            <motion.div
+              className="text-center font-mono text-[11px] px-3 py-2 rounded-lg"
+              style={{ background: "rgba(255,0,0,0.07)", border: "1px solid rgba(255,51,51,0.25)", color: RED_MID }}
+              animate={{ opacity: [1, 0.5, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              ⚠ NATIONAL CONFIDENTIALITY DIRECTIVE
+            </motion.div>
+          )}
+
+          {/* Tech tags */}
           {activeTab === "technologies" && (
             <div className="flex flex-wrap gap-1.5 justify-center max-w-[200px]">
               {project.technologies.map((t, i) => (
                 <motion.span key={t} className="text-[11px] px-2 py-0.5 rounded font-mono"
                   style={{
-                    background: isDark ? "rgba(0,255,65,0.07)" : "rgba(5,150,105,0.08)",
+                    background: `${accent}12`,
                     color: accent,
-                    border: `1px solid ${isDark ? "rgba(0,255,65,0.18)" : "rgba(5,150,105,0.25)"}`,
+                    border: `1px solid ${accent}30`,
                   }}
                   initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: i * 0.04 }}>
@@ -387,19 +481,23 @@ function BrowserWindow({
 
 /* ── TabbedTerminal ──────────────────────────────────────────────── */
 function TabbedTerminal({
-  project, activeTab, unlockedTabs, clickableTabs, doneMap, cache, ip,
+  project, activeTab, unlockedTabs, doneMap, cache, ip,
   onTabDone, onTabSwitch,
 }: {
   project: Project;
   activeTab: TabKey;
   unlockedTabs: TabKey[];
-  clickableTabs: Set<TabKey>;
   doneMap: Record<TabKey, boolean>;
   ip: string;
-  cache: React.MutableRefObject<Map<string, TLine[]>>;
+  cache: React.RefObject<Map<string, TLine[]>>;
   onTabDone: (t: TabKey) => void;
   onTabSwitch: (t: TabKey) => void;
 }) {
+  const isRestricted = !!project.restricted;
+  const ACC = isRestricted ? RED     : GREEN;
+  const DIM_ = isRestricted ? RED_DIM : DIM;
+  const ROOT_ = isRestricted ? RED_MID : ROOT;
+
   const scripts: Record<TabKey, TLine[]> = {
     general:      generalScript(project, ip),
     details:      detailsScript(project, ip),
@@ -414,13 +512,24 @@ function TabbedTerminal({
     details: "technologies",
   };
 
+  const termBg  = isRestricted ? "#0a0000" : "#0a0a0a";
+  const tabBg   = isRestricted ? "#0d0000" : "#0d0d0d";
+  const userTag = isRestricted ? "ROOT" : "ThisIsNotYourIP";
+
   return (
     <div className="flex flex-col h-full rounded-lg overflow-hidden"
-      style={{ background: "#0a0a0a", border: `1px solid ${GREEN}20`, boxShadow: `0 0 40px -10px ${GREEN}30` }}
+      style={{ background: termBg, border: `1px solid ${ACC}20`, boxShadow: `0 0 40px -10px ${ACC}30` }}
     >
-      {/* Tab bar — only visible/unlocked tabs, each takes equal flex */}
-      <div className="flex-shrink-0 flex items-stretch border-b"
-        style={{ background: "#0d0d0d", borderColor: `${GREEN}15` }}
+      {/* Restricted scanlines */}
+      {isRestricted && (
+        <div className="absolute inset-0 pointer-events-none z-0"
+          style={{ background: "repeating-linear-gradient(0deg,rgba(255,0,0,0.03) 0px,rgba(255,0,0,0.03) 1px,transparent 1px,transparent 3px)" }}
+        />
+      )}
+
+      {/* Tab bar */}
+      <div className="relative z-10 flex-shrink-0 flex items-stretch border-b"
+        style={{ background: tabBg, borderColor: `${ACC}15` }}
       >
         {unlockedTabs.map((key) => {
           const active = key === activeTab;
@@ -430,11 +539,10 @@ function TabbedTerminal({
               onClick={() => onTabSwitch(key)}
               className="flex items-center justify-center gap-1.5 py-[7px] font-mono text-[11px] whitespace-nowrap overflow-hidden"
               style={{
-                flex: 1,
-                minWidth: 0,
-                background: active ? "rgba(0,255,65,0.05)" : "transparent",
-                borderRight: `1px solid ${GREEN}10`,
-                borderBottom: active ? `2px solid ${GREEN}` : "2px solid transparent",
+                flex: 1, minWidth: 0,
+                background: active ? `${ACC}08` : "transparent",
+                borderRight: `1px solid ${ACC}10`,
+                borderBottom: active ? `2px solid ${ACC}` : "2px solid transparent",
                 cursor: "none",
                 transition: "all 0.18s",
               }}
@@ -445,32 +553,32 @@ function TabbedTerminal({
               <span style={{
                 width: 6, height: 6, borderRadius: "50%", flexShrink: 0,
                 display: "inline-block",
-                background: active ? GREEN : "#333",
-                boxShadow: active ? `0 0 5px ${GREEN}` : "none",
+                background: active ? ACC : (isRestricted ? "#330000" : "#333"),
+                boxShadow: active ? `0 0 5px ${ACC}` : "none",
                 transition: "all 0.18s",
               }} />
-              <span style={{ color: active ? DIM : "#3a3a3a", overflow: "hidden", textOverflow: "ellipsis" }}>
-                ThisIsNotYourIP@
+              <span style={{ color: active ? DIM_ : (isRestricted ? "#3a0000" : "#3a3a3a"), overflow: "hidden", textOverflow: "ellipsis" }}>
+                {userTag}@
               </span>
-              <span style={{ color: active ? ROOT : "#2a2a2a", overflow: "hidden", textOverflow: "ellipsis" }}>
+              <span style={{ color: active ? ROOT_ : (isRestricted ? "#2a0000" : "#2a2a2a"), overflow: "hidden", textOverflow: "ellipsis" }}>
                 {ip}:~
               </span>
-              <span style={{ color: "#2a2a2a", fontSize: 10, flexShrink: 0 }}>×</span>
+              <span style={{ color: isRestricted ? "#2a0000" : "#2a2a2a", fontSize: 10, flexShrink: 0 }}>×</span>
             </motion.button>
           );
         })}
       </div>
 
       {/* Prompt row */}
-      <div className="px-4 pt-3 pb-1 flex-shrink-0 font-mono text-[13px]">
-        <span style={{ color: DIM }}>ThisIsNotYourIP@</span>
-        <span style={{ color: ROOT }}>{ip}</span>
-        <span style={{ color: "#555" }}>:~$</span>
-        <span className="inline-block w-[7px] h-[13px] ml-1 align-middle animate-pulse" style={{ background: GREEN }} />
+      <div className="relative z-10 px-4 pt-3 pb-1 flex-shrink-0 font-mono text-[13px]">
+        <span style={{ color: DIM_ }}>{userTag}@</span>
+        <span style={{ color: ROOT_ }}>{ip}</span>
+        <span style={{ color: isRestricted ? "#550000" : "#555" }}>{isRestricted ? ":~#" : ":~$"}</span>
+        <span className="inline-block w-[7px] h-[13px] ml-1 align-middle animate-pulse" style={{ background: ACC }} />
       </div>
 
       {/* Content area */}
-      <div className="flex-1 px-4 pb-3 flex flex-col overflow-hidden min-h-0">
+      <div className="relative z-10 flex-1 px-4 pb-3 flex flex-col overflow-hidden min-h-0">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeTab}
@@ -490,6 +598,7 @@ function TabbedTerminal({
               <NextBtn
                 label={nextLabel[activeTab]!}
                 onClick={() => onTabSwitch(nextTab[activeTab]!)}
+                restricted={isRestricted}
               />
             )}
           </motion.div>
@@ -523,8 +632,6 @@ function ModalInner({ project, onClose, layoutId }: {
     ...(visited.has("details")      ? ["details"]      as TabKey[] : []),
     ...(visited.has("technologies") ? ["technologies"] as TabKey[] : []),
   ];
-  const clickable = new Set(unlocked);
-
   useEffect(() => {
     document.body.style.overflow = "hidden";
     fetch("https://api.ipify.org?format=json")
@@ -619,10 +726,14 @@ function ModalInner({ project, onClose, layoutId }: {
               transition={{ duration: 0.25 }}
             >
               {/* Wallpaper logo — very faint background */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none"
-                style={{ opacity: 0.04 }}>
-                <Image src={project.logo} alt="" width={200} height={200} className="object-contain" style={{ width: "auto", height: "auto", maxWidth: 200, maxHeight: 200, filter: "grayscale(1)" }} />
-              </div>
+              {project.logo && (
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                  style={{ opacity: 0.04 }}>
+                  <div className="relative w-[200px] h-[200px]">
+                    <Image src={project.logo} alt="" fill sizes="200px" className="object-contain filter grayscale" />
+                  </div>
+                </div>
+              )}
 
               {/* Terminal icon — top-left like a desktop shortcut */}
               <motion.div
@@ -742,7 +853,6 @@ function ModalInner({ project, onClose, layoutId }: {
                 project={project}
                 activeTab={activeTab}
                 unlockedTabs={unlocked}
-                clickableTabs={clickable}
                 doneMap={doneMap}
                 cache={cache}
                 ip={ip}

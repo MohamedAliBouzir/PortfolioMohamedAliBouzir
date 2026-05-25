@@ -24,14 +24,15 @@ const Services = () => {
           {servicesData.map((service) => (
             <HoverZoom key={service.index}>
               <div className="flex flex-col items-center justify-between p-4 shadow-lg rounded-lg border border-accent/10 hover:border-accent duration-300 hover:bg-background h-full">
-                <div className="text-3xl mb-2 rounded-4xl bg-amber-200/8 border-accent/10 border p-2 flex items-center justify-center w-16 h-16 overflow-hidden">
+                <div className="text-3xl mb-2 rounded-4xl bg-amber-200/8 border-accent/10 border p-2 flex items-center justify-center w-16 h-16 overflow-hidden relative">
                   <Image
                     src={service.Icon}
                     priority
                     quality={100}
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    fill
+                    sizes="64px"
                     alt="service icon"
-                    className="object-cover"
+                    className="object-cover p-2"
                   />
                 </div>
                 <p className="text-xl font-semibold mb-1 text-center">

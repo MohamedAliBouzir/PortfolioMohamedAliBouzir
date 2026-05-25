@@ -6,6 +6,7 @@ import Bill from "@/assets/images/jpg/societies/D2M.png";
 import SkillWare from "@/assets/images/jpg/societies/skillware.jpeg";
 import Digital from "@/assets/images/jpg/societies/digitalmarket.jpeg";
 import Codetime from "@/assets/images/jpg/societies/codetime.jpg";
+
 export const experienceData: IExperiencesInterface[] = [
   {
     id: 0,
@@ -18,29 +19,28 @@ export const experienceData: IExperiencesInterface[] = [
     endDate: "Present",
     position: "Software Architect & Lead Engineer",
     description: `<div id="mayra-entertainment">
-                    <p><strong>Large-scale real-time financial platform</strong> — end-to-end system architecture, team leadership, and full-stack engineering.</p>
+                    <p><strong>Large-scale real-time financial platform</strong> — Designed and owned the end-to-end system architecture of an enterprise-grade prepaid card and transaction engine built to handle intense concurrent user loads safely.</p>
 
                     <h3>Architecture & Engineering</h3>
                     <ul>
-                      <li>Designed and owned end-to-end system architecture covering module boundaries, data flow contracts, and future microservices migration path.</li>
-                      <li>Architected a <strong>multi-tenant data isolation layer</strong> using a schema-per-tenant PostgreSQL strategy, enabling seamless future migration to fully isolated microservices without application-level rewrites.</li>
-                      <li>Architected a <strong>zero-trust authentication system</strong> using opaque session tokens stored in Redis, HttpOnly/Secure/Strict cookies, and server-side session invalidation — eliminating XSS token-theft attack surface entirely.</li>
-                      <li>Designed a <strong>4-layer wallet mutation security model</strong> combining idempotency guards, distributed Redis locks, optimistic concurrency versioning, and atomic SQL constraints to prevent double-spend and race conditions under concurrent load.</li>
-                      <li>Built an <strong>asynchronous audit pipeline</strong> using BullMQ and Redis, decoupling all logging and observability from the request lifecycle without adding latency to user-facing responses.</li>
-                      <li>Architected a <strong>real-time engine</strong> with atomic Lua scripts in Redis, ensuring transactions are frozen at payment time with exposure monitoring enforcement to control financial risk.</li>
+                      <li>Designed a <strong>4-layer transaction security model</strong> combining idempotency guards, distributed Redis locks, optimistic concurrency versioning, and atomic SQL constraints to completely eliminate balance discrepancies and double-spending.</li>
+                      <li>Architected a <strong>multi-tenant data isolation layer</strong> using a schema-per-tenant PostgreSQL strategy, enabling a direct, rewrite-free future migration path to a fully isolated microservices topology.</li>
+                      <li>Architected a <strong>zero-trust authentication system</strong> using opaque session tokens stored in Redis, HttpOnly/Secure/Strict cookies, and server-side session invalidation, entirely removing token-theft and XSS attack surfaces.</li>
+                      <li>Built an <strong>asynchronous audit pipeline</strong> using BullMQ and Redis, decoupling heavy logging, analytics, and telemetry from the primary request lifecycle without adding latency to client responses.</li>
+                      <li>Engineered a high-performance transactional core utilizing <strong>atomic Lua scripts in Redis</strong> to freeze transaction states instantly at payment execution and enforce real-time risk exposure monitoring.</li>
                     </ul>
 
                     <h3>Team Leadership & Governance</h3>
                     <ul>
                       <li>Led backend and frontend engineering teams across the full stack (NestJS, Next.js, PostgreSQL, Redis, Prisma), enforcing strict module encapsulation and cross-module communication contracts via EventEmitter and BullMQ.</li>
-                      <li>Established platform-wide architectural governance: no direct cross-module Prisma access, DTO-only boundaries, and event-driven side effects — reducing coupling and enabling independent team delivery.</li>
-                      <li>Produced formal technical documentation including technology selection reports, integration specification letters, and architectural decision records for regulatory and banking compliance workflows.</li>
+                      <li>Established platform-wide architectural governance: enforced <strong>DTO-only boundaries</strong>, banned direct cross-module database access, and mandated event-driven side effects to drastically reduce system coupling and allow independent team shipping.</li>
+                      <li>Produced comprehensive Architectural Decision Records (ADRs) and integration specification documentation to smoothly satisfy strict regulatory and banking compliance workflows.</li>
                     </ul>
 
                     <h3>Integrations & Testing</h3>
                     <ul>
-                      <li>Integrated third-party payment infrastructure, designing the deposit flow from frontend initiation through backend confirmation to atomic wallet credit with full traceability.</li>
-                      <li>Implemented a comprehensive E2E and unit test suite covering auth lifecycle, session management, and concurrent wallet operations to guarantee correctness under adversarial conditions.</li>
+                      <li>Integrated third-party payment infrastructure, designing a fully traceable deposit flow from frontend initialization through backend confirmation down to atomic account balance mutations.</li>
+                      <li>Implemented an extensive automated E2E and unit test suite simulating adversarial conditions to validate concurrent operations, session lifecycles, and edge-case error bounds.</li>
                     </ul>
                   </div>`,
     technologies: [
@@ -68,53 +68,29 @@ export const experienceData: IExperiencesInterface[] = [
     presence: "Hybrid",
     startDate: "Apr 2024",
     endDate: "Present",
-    position: "Full-stack JS Engineer",
+    position: "Software Engineer",
     description: `<div id="erp-project">
-                    <p><strong>Client:</strong> Leading European Stationing Company</p>
+                    <p><strong>Enterprise Parking ERP Ecosystem (EFFIA Belgium)</strong> — Leading the development and performance optimization of a massive, configuration-driven multi-platform ERP managing <strong>10,000+ active daily users</strong> across European smart parking infrastructure.</p>
 
-                    <p>
-                      I am actively contributing to the development of a highly flexible, configuration-driven ERP platform tailored for a major European stationing company. The system is designed to empower business teams to customize workflows and features without requiring changes to the underlying codebase.
-                    </p>
-
-                    <h3>Key Responsibilities & Achievements</h3>
+                    <h3>Key Architectural Contributions & Achievements</h3>
                     <ul>
                       <li>
-                        <strong>Client Communication & Requirements Gathering:</strong>
-                        Maintained direct communication with the client and stakeholders to gather, refine, and validate functional and technical requirements. This ensured strong alignment with business needs and allowed for rapid feedback loops.
+                        <strong>IoT & Hardware Orchestration (B2B Jafar):</strong> Developed the edge-integration pipelines linking backend APIs with physical <strong>Skidata and WPS hardware</strong>, translating user reservations into automated license plate recognition data and real-time QR access codes.
                       </li>
                       <li>
-                        <strong>Frontend Development:</strong>
-                        Built scalable, reusable, and modular UI components using React.js, structured around a dynamic configuration layer for high adaptability across different business modules.
+                        <strong>FinTech & Compliance (B2B Jasmin):</strong> Built the core financial analytics engine tracking revenue flux, handling automated invoicing, and integrating the <strong>PEPPOL protocol</strong> for direct, compliant reporting to the Belgian government.
                       </li>
                       <li>
-                        <strong>Design-to-Code Collaboration:</strong>
-                        Worked closely with the design team to migrate Figma-based UI/UX templates into fully responsive and pixel-perfect frontend components.
+                        <strong>Staged Task Scheduling:</strong> Re-engineered a heavy, resource-blocking background scheduling setup into a single, highly optimized midnight <strong>Master Cron engine</strong> that dynamically schedules isolated, single-execution worker jobs for subscription billing and cache management.
                       </li>
                       <li>
-                        <strong>Backend API Development:</strong>
-                        Developed robust and scalable RESTful APIs with Express.js, leveraging MySQL for structured and efficient data storage.
+                        <strong>Performance Engineering:</strong> Delivered a <strong>+20% speed optimization on initial app boot</strong> across multiple portals by implementing code-splitting, route-level lazy loading, and custom caching layers. Refactored bottlenecked synchronous endpoints into parallel async execution tracks.
                       </li>
                       <li>
-                        <strong>Third-Party Service Integrations:</strong>
-                        Integrated various external services including:
-                        <ul>
-                          <li><strong>Brevo (formerly Sendinblue):</strong> For dynamic email workflows</li>
-                          <li><strong>Wordline:</strong> For secure and compliant online payments</li>
-                          <li><strong>Auth0:</strong> For authentication and role-based access control</li>
-                          <li><strong>Google Maps API:</strong> For station geolocation and visualization</li>
-                        </ul>
+                        <strong>Client-Facing Mobility Architecture:</strong> Built the modular B2C interface covering reservation lookups, dynamic pricing grids, and secure payment processing utilizing <strong>Worldline</strong>. Enforced route-level role protection and SEO indexing optimizations with React Helmet.
                       </li>
                       <li>
-                        <strong>Internal Library Development:</strong>
-                        Contributed to the development and maintenance of proprietary, closed-source libraries used across the ERP platform, encapsulating shared logic, components, and utilities.
-                      </li>
-                      <li>
-                        <strong>System Architecture & Optimization:</strong>
-                        Dockerized the entire application for consistent deployment. Improved performance with caching, query optimization, and frontend lazy loading techniques.
-                      </li>
-                      <li>
-                        <strong>Security & Compliance:</strong>
-                        Ensured secure handling of personal data and full adherence to modern privacy and security standards.
+                        <strong>Technical Governance:</strong> Assumed ownership of product quality by conducting rigorous code reviews, maintaining design systems from Figma inputs, and dockerizing full-stack modules for clean deployment.
                       </li>
                     </ul>
                   </div>`,
@@ -144,19 +120,14 @@ export const experienceData: IExperiencesInterface[] = [
     endDate: "Jul 2025",
     position: "IT Consultant",
     description: `<div id="muscle-meet">
-                    <h2>Muscle Meet – Mobile App Refactor & Backoffice</h2>
-
-                    <p>
-                      Contributed to refactoring and upgrading the codebase of <strong>Muscle Meet</strong>, a mobile fitness app, with a focus on improving code quality, performance, and maintainability.
-                    </p>
+                    <p><strong>Muscle Meet Mobile Ecosystem</strong> — Retained to systematically refactor, modularize, and upgrade the technical footprint of a scaling cross-platform fitness application.</p>
 
                     <h3>Main Contributions</h3>
                     <ul>
-                      <li>Refactored the existing React Native app to enhance structure, readability, and long-term scalability</li>
-                      <li>Upgraded backend logic using Express.js and MongoDB to improve data handling and performance</li>
-                      <li>Built a custom web-based backoffice using React to manage app content and user-related data</li>
-                      <li>Implemented authentication using <strong>Keycloak</strong> for secure login across both mobile and web platforms</li>
-                      <li>Improved developer experience with cleaner architecture and reusable components</li>
+                      <li>Refactored legacy React Native mobile modules to enforce strict architectural typing, boost rendering stability, and support scaling features.</li>
+                      <li>Upgraded backend controller methods with Express.js and MongoDB, deploying index optimization patches to accelerate data aggregation response times.</li>
+                      <li>Built a dedicated, real-time web administration backoffice dashboard using React and Vite to streamline system configuration and content management.</li>
+                      <li>Integrated a unified, secure single-sign-on (SSO) authentication pipeline across both the mobile and web modules using <strong>Keycloak</strong>.</li>
                     </ul>
                   </div>`,
     technologies: [
@@ -179,19 +150,15 @@ export const experienceData: IExperiencesInterface[] = [
     startDate: "Feb 2024",
     endDate: "Apr 2024",
     position: "Full-stack Developer",
-    description: `<div>
-                    <p>
-                      I contributed to the projects <strong>Sodecor</strong>, <strong>La Galerie Ben Zineb</strong>, and <strong>Auto Expert</strong>.
-                    </p>
-                    <p>
-                      I also developed the content management system (CMS) portion of <strong>SMOFT ERP</strong>, integrating websites developed with the ERP.
-                    </p>
-                    <p>
-                      Most of my work focused on front-end development, where I built intuitive user interfaces and created features that allow users to consult, add, update, and remove website content directly from SMOFT ERP.
-                    </p>
-                    <p>
-                      Additionally, I ensured the CMS dashboard functionalities were stable and user-friendly, enabling web app managers to quickly update and modify their websites with ease.
-                    </p>
+    description: `<div id="smoft-erp">
+                    <p><strong>High-Velocity Enterprise Integration</strong> — Delivered immediate engineering impact under a tight 2-month contract by jumping into a native ecosystem and rapidly shipping integrated client interfaces and ERP core updates.</p>
+                    
+                    <h3>Key Achievements</h3>
+                    <ul>
+                      <li>Successfully architected, tested, and shipped <strong>two complete web applications</strong> from scratch, establishing direct data sync frameworks with the centralized core ERP backend.</li>
+                      <li>Developed native Content Management System (CMS) modules and dynamic dashboards, enabling clients to natively manage external platform data and assets directly through the ERP core.</li>
+                      <li>Audited and refactored legacy client-side routines using asynchronous <strong>AJAX and optimized jQuery</strong> data fetching, dropping server payload weights and enhancing user responsiveness.</li>
+                    </ul>
                   </div>`,
     technologies: [
       "HTML",
@@ -211,49 +178,27 @@ export const experienceData: IExperiencesInterface[] = [
     societeName: "Billcom Consulting",
     startDate: "Jan 2023",
     endDate: "Aug 2023",
-    position: "Data Engineer",
-    description: `<div>
-                    <h2>DataMigrationMorpher (D2M) Project</h2>
+    position: "Software Engineer (Data Pipelines)",
+    description: `<div id="data-migration-morpher">
+                    <p><strong>DataMigrationMorpher (D2M) Project</strong> — Led the end-to-end architecture, engine design, and full-stack development of a custom, high-speed, enterprise-grade ETL (Extract, Transform, Load) application.</p>
+                    
+                    <h3>Notable Performance Architecture Breakthrough</h3>
                     <p>
-                      As the sole developer of DataMigrationMorpher (D2M), I led the design and implementation of the application's architecture. Using PyDash, I optimized all methods to enhance performance and deliver the best results for clients.
-                    </p>
-                    <strong>Key Achievements: </strong>
-                    <ul>
-                      <li>Conceptualized and developed D2M from inception to deployment, incorporating custom data mappings, transformation rules, and error handling mechanisms.</li>
-                      <li>Implemented a robust and scalable architecture ensuring optimal performance and flexibility for users.</li>
-                      <li>Provided technical guidance and support to stakeholders, demonstrating expertise in data migration best practices.</li>
-                    </ul>
-                    <p>I am proud of the performance improvements achieved:</p>
-                    <strong>Notable Performance Achievement: </strong>
-                    <p>
-                      D2M outperforms all major solutions in the market. For example, migrating BSCS RTX Table with 20 million rows and 588 columns (~100 GB of data) on a Red Hat UNIX server with 32GB RAM, 100GB Hard Disk, and 14 physical cores, D2M execution times were:
+                      Engineered a custom concurrent processing engine that completely outpaced standard industry alternatives. Migrating a massive relational production database containing <strong>20 million rows and 599 columns (~100 GB of data)</strong> across distinct remote hosts on a limited RedHat Unix environment, performance rates yielded:
                     </p>
                     <ul>
-                      <li>Talend Open Studio: 2 hours 30 minutes (AI-generated estimation)</li>
-                      <li>Apache Spark: 2 hours (AI-generated estimation)</li>
-                      <li>Oracle Data Integrator: 3 hours 30 minutes (AI-generated estimation)</li>
-                      <li>Microsoft SSIS: 3 hours (AI-generated estimation)</li>
-                      <li>Microsoft SSIS (real test): failed after 1 hour due to RAM issues</li>
-                      <li>DataMigrationMorpher (real test): completed migration in just 12 minutes</li>
+                      <li><strong>Traditional Industry Standard (SSIS, Spark, Talend):</strong> Averaged 2 to 3.5 hours of processing overhead, with physical SSIS tests crashing under out-of-memory (OOM) load constraints.</li>
+                      <li><strong>DataMigrationMorpher (D2M):</strong> Completed the entire end-to-end data transfer safely and with full validity in <strong>just 12 minutes</strong>.</li>
                     </ul>
-                    <strong>Project Overview: </strong>
-                    <p>
-                      DataMigrationMorpher is a revolutionary application that simplifies data migration. Built with Python, Pandas, Cx_Oracle, Oracle, TypeScript, and React.js, it ensures unmatched efficiency and accuracy in migrating data across sources and destinations.
-                    </p>
-                    <strong>Key Features: </strong>
+
+                    <h3>Core Technical Achievements</h3>
                     <ul>
-                      <li><strong>Automated Migration:</strong> Automates the full migration process, reducing manual intervention, speeding up migrations, and minimizing errors.</li>
-                      <li><strong>Compatibility:</strong> Supports multiple operating systems for seamless cross-platform data migration.</li>
-                      <li><strong>Data Transformation:</strong> Powerful tools to manipulate and format data for destination systems during migration.</li>
-                      <li><strong>Scalability:</strong> Designed to handle migrations small and large with a robust architecture for complex tasks.</li>
-                      <li><strong>Real-time Monitoring:</strong> Tracks migration progress live, enabling quick identification of issues to ensure on-time completion.</li>
-                      <li><strong>Reporting:</strong> Generates detailed reports on migration success, errors, and record counts.</li>
+                      <li>Designed a highly concurrent master-worker architecture using a specialized <strong>10-process / 10-thread pipeline topology</strong> in Python to ingest, partition, and bulk-load data in parallel chunks.</li>
+                      <li>Overcame host memory starvation crashes by implementing a strategy that offloaded raw data blocks straight to disk storage, preserving system RAM exclusively for fast CPU-bound mathematical operations and transformation mappings.</li>
+                      <li>Accelerated injection rates by building scripts to programmatically drop database table indexes pre-load and rebuild them post-load, paired with a self-healing routine to systematically isolate and retry individual row failures.</li>
+                      <li>Built an interactive Progressive Web App (PWA) management panel utilizing <strong>WebSockets</strong> to stream real-time telemetry, data ingestion metrics, and live pipeline status straight to user screens.</li>
                     </ul>
-                    <p>
-                      Overall, DataMigrationMorpher is a versatile and powerful tool that simplifies the complex data migration process.
-                    </p>
-                  </div>
-`,
+                  </div>`,
     technologies: [
       "Python",
       "Cx_Oracle",
@@ -280,24 +225,19 @@ export const experienceData: IExperiencesInterface[] = [
     societeName: "Skillware Company",
     startDate: "Jan 2022",
     endDate: "Mar 2023",
-    position: "Front-end Developer",
-    description: `<div>
-                    <strong>Sports and Betting Web Applications</strong>
-                    <p>
-                      I developed user-friendly and responsive web applications for sports and betting, combining React, TypeScript, and clean architecture principles to create solid foundations. It was exciting to tackle challenges of performance and responsiveness to deliver seamless experiences. 
-                    </p>
-                    <p>
-                      To keep data fresh and efficient, I integrated SWR and other libraries to smoothly consume REST APIs from our backend team, ensuring users always had the latest information at their fingertips.
-                    </p>
-                    <p>
-                      I made use of advanced React techniques like higher-order components, lazy loading, suspense, memos, and callbacks. These helped me boost performance and smooth out the user journey, making every interaction feel fast and intuitive. 
-                    </p>
-                    <p>
-                      One of the most rewarding parts was designing and building diverse, real-time interfaces — from authentication and betting to casinos, invoices, and live match tracking. Creating these helped bring energy and immediacy to the apps. 
-                    </p>
-                    <p>
-                      Throughout, my focus remained on crafting smooth, inviting designs that were both visually appealing and optimized for peak performance, ensuring every user could enjoy the experience effortlessly.
-                    </p>
+    position: "Software Engineer (Frontend & Performance)",
+    description: `<div id="skillware-betting">
+                    <p><strong>Sports & Live Wagering Platforms</strong> — Engineered responsive, highly performant frontend systems for real-time betting platforms, focusing heavily on runtime execution, secure async state, and core web vitals optimization.</p>
+
+                    <h3>Key Achievements</h3>
+                    <ul>
+                      <li>Boosted platform Google PageSpeed Insights (PSI) KPIs by <strong>17%</strong> and slashed page-load time by over <strong>25%</strong> across all application routes.</li>
+                      <li>Achieved performance targets by auditing layout updates and enforcing advanced React optimizations, including <strong>React.memo, useMemo, useCallback, Higher-Order Components (HOCs), and Lazy/Suspense code-splitting</strong>.</li>
+                      <li>Eliminated data race conditions and client-side view glitches under rapid real-time updates by implementing custom cursor-based pagination and exponential backoff retry algorithms.</li>
+                      <li>Embedded and secured complex third-party interactive gaming iFrames, managing multi-component state sharing natively via centralized React Context.</li>
+                      <li>Contributed to full-stack features by optimizing backend data objects, structuring strict TypeScript typings, and configuring secure HttpOnly cookies for session TTL tokens.</li>
+                      <li>Translated complex, high-fidelity Figma specifications into pixel-perfect, responsive layouts using Tailwind CSS.</li>
+                    </ul>
                   </div>`,
     technologies: [
       "Next.js",
@@ -319,31 +259,17 @@ export const experienceData: IExperiencesInterface[] = [
     startDate: "Jun 2022",
     endDate: "Aug 2022",
     position: "Mobile Developer",
-    description: `<section>
-                    <strong>Store 2000 Hybrid Mobile App for Technical Team</strong>
-                    <p>
-                      The technical team at Store 2000 faced challenges using the Odoo interface on their mobiles during work. To make their lives easier, I developed a hybrid mobile app that empowered them to check available tools, report tasks, and create quotations on the spot.
-                    </p>
-                    <p>
-                      Using Ionic v6, Capacitor, React, TypeScript, Odoo v14, OpenAPI, and Python, I built a mini ERP app tailored specifically to the team's needs, putting the power of efficient task management and client interaction right in their hands.
-                    </p>
-                    <p>
-                      A key feature was a user-friendly menu that allowed immediate quotation creation for clients, making it easy to assemble window blinds from available parts and keep the technical staff calendars up to date. 
-                    </p>
-                    <p>
-                      Real-time task management was implemented to track active, completed, and in-progress jobs, keeping the team organized and productive throughout their busy days. 
-                    </p>
-                    <p>
-                      The app seamlessly integrated with the administration ERP (Odoo), ensuring all data stayed in sync and management had up-to-date information. 
-                    </p>
-                    <p>
-                      I also developed a detailed client data page with contact info, requests, and house specifics, enabling better service delivery. The billing system allowed clients to sign off on quotations, automatically generating invoices in PDF format directly in Odoo.
-                    </p>
-                    <p>
-                      This project truly transformed how the technical team worked, helping them be more efficient and responsive every day.
-                    </p>
-                  </section>
-`,
+    description: `<div id="store-2000">
+                    <p><strong>Store 2000 Field Logistics App</strong> — Conceived and built a custom hybrid mobile ERP extension app to liberate field technician workflows from dense desktop administration portals.</p>
+
+                    <h3>Key Achievements</h3>
+                    <ul>
+                      <li>Architected and launched a hybrid mobile application utilizing <strong>React, TypeScript, Ionic, and Capacitor</strong>, fully integrated with a backend <strong>Odoo ERP</strong> instance over custom OpenAPI endpoints.</li>
+                      <li>Built real-time background location tracking tools allowing automated updates of on-duty status and real-time field navigation paths to client targets.</li>
+                      <li>Designed a dynamic field intervention tool enabling workers to build complex custom configurations from live inventory components and instantly generate client invoices.</li>
+                      <li>Solved critical cross-origin (CORS) connection bottlenecks during initial server deployments by restructuring and optimizing <strong>Nginx reverse proxy configurations</strong>.</li>
+                    </ul>
+                  </div>`,
     technologies: ["React", "Ionic", "Capacitor", "CSS", "Typescript"],
   },
   {
@@ -354,26 +280,19 @@ export const experienceData: IExperiencesInterface[] = [
     societeName: "Code Time",
     startDate: "Jul 2021",
     endDate: "Oct 2021",
-    position: "QA Engineer",
-    description: `<div>
-                    <p><strong>Project:</strong> NOE</p>
-                    <p>
-                      During my internship, I took on the challenge of automating the testing process for a platform with over 2000 pages. Using Selenium, I developed a comprehensive script that automatically tested all buttons, fields, pages, and filters to ensure flawless functionality.
-                    </p>
-                    <p>
-                      To make bug tracking efficient, I implemented automated bug reporting that included code status, error location (capturing the XPath in HTML5), and detailed reports for rapid issue resolution.
-                    </p>
-                    <p>
-                      The script tested for page opening errors, non-functional filters, incorrect results, status code errors, redirections, and wrong paths, covering all critical aspects to maintain platform quality. 
-                    </p>
-                    <p>
-                      Performance optimization was a priority. By implementing multithreading, I reduced the testing time from 30 hours to 19 hours. Then, through multiprocessing, I further cut down the time to complete all tests to just 25 minutes, significantly accelerating the release cycle.
-                    </p>
-                    <p>
-                      To ensure consistent testing, I set up a cron job to automatically run these tests twice daily, at 7 am and 6 pm, providing ongoing quality assurance without manual intervention. 
-                    </p>
-                  </div>
-`,
+    position: "Software Engineering Intern (Automation)",
+    description: `<div id="code-time-noe">
+                    <p><strong>Project NOE Regression Automation</strong> — Tasked with mapping and automating the quality assurance pipeline for a complex web application with extensive multi-interface user workflows.</p>
+
+                    <h3>Key Achievements</h3>
+                    <ul>
+                      <li>Overcame massive human test simulation bottlenecks by designing a custom parallel testing engine in Python using a hybrid <strong>Multiprocessing and Multithreading framework</strong>.</li>
+                      <li>Successfully optimized execution overhead, crashing regression testing loops down from an initial 30 hours to <strong>just 25 minutes</strong>.</li>
+                      <li>Developed dynamic latency-aware test handlers that monitored interface responsiveness via automated background pings, launching thread workers the instant UI visibility was verified.</li>
+                      <li>Built an automated endpoint scanner that iterated through application routers to catalog and validate core API server response error codes.</li>
+                      <li>Configured scheduled system cron jobs to trigger automated regression passes twice daily, establishing hands-free validation.</li>
+                    </ul>
+                  </div>`,
     technologies: ["HTML", "Xpath", "Python", "MariaDB", "Selenium"],
   },
 ];

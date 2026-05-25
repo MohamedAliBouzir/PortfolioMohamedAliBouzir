@@ -12,9 +12,10 @@ interface Project {
   name: string;
   link: string | null;
   type: string[];
-  logo: StaticImageData | string;
+  logo: StaticImageData | string | null;
   description: string;
   technologies: string[];
+  restricted?: boolean;
 }
 
 interface ProjectCardProps {
@@ -233,6 +234,9 @@ export default function ProjectCard({ project, index, onOpen, layoutId }: Projec
 
   /* live glow colour tracks theme via CSS variables */
 
+  const R = "#ff3333";
+  const isRestricted = project.restricted === true;
+
   return (
     <motion.div
       layoutId={layoutId}
@@ -240,57 +244,141 @@ export default function ProjectCard({ project, index, onOpen, layoutId }: Projec
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.6, delay: (index % 3) * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
-      whileHover={{ y: -6 }}
+      whileHover={{ y: -8, zIndex: 10 }}
       onClick={onOpen}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
-      className="group relative glass rounded-2xl border border-border/50 transition-colors duration-700 overflow-hidden cursor-none h-full"
+      className="group relative glass rounded-2xl overflow-hidden cursor-none h-full"
+      style={isRestricted ? {
+        border: "1px solid rgba(255,51,51,0.5)",
+        boxShadow: "0 0 24px -6px rgba(255,51,51,0.35)",
+      } : undefined}
     >
-      {/* Space canvas */}
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 w-full h-full rounded-2xl pointer-events-none"
-      />
+      {/* Restricted: pulsing red border glow */}
+      {isRestricted && (
+        <motion.div
+          className="absolute inset-0 rounded-2xl pointer-events-none"
+          animate={{ boxShadow: [
+            "0 0 18px -6px rgba(255,51,51,0.3)",
+            "0 0 36px -2px rgba(255,51,51,0.6)",
+            "0 0 18px -6px rgba(255,51,51,0.3)",
+          ]}}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+        />
+      )}
 
-      {/* Border glow — fades with spring */}
-      <motion.div
-        className="absolute inset-0 rounded-2xl pointer-events-none"
-        style={{ 
-          boxShadow: "inset 0 0 0 1px var(--glow-color)", 
-          opacity: mounted ? opacity : 0 
-        }}
-      />
+      {/* Restricted: red scanline overlay */}
+      {isRestricted && (
+        <div
+          className="absolute inset-0 pointer-events-none rounded-2xl"
+          style={{
+            background: "repeating-linear-gradient(0deg, rgba(255,51,51,0.03) 0px, rgba(255,51,51,0.03) 1px, transparent 1px, transparent 3px)",
+          }}
+        />
+      )}
+
+      {/* Space canvas — only for non-restricted */}
+      {!isRestricted && (
+        <canvas
+          ref={canvasRef}
+          className="absolute inset-0 w-full h-full rounded-2xl pointer-events-none"
+        />
+      )}
+
+      {/* Restricted: dark red bg tint */}
+      {isRestricted && (
+        <div className="absolute inset-0 rounded-2xl pointer-events-none"
+          style={{ background: "rgba(255,20,20,0.04)" }} />
+      )}
+
+      {/* Border glow — non-restricted only */}
+      {!isRestricted && (
+        <motion.div
+          className="absolute inset-0 rounded-2xl pointer-events-none"
+          style={{
+            boxShadow: "inset 0 0 0 1px var(--glow-color)",
+            opacity: mounted ? opacity : 0
+          }}
+        />
+      )}
 
       {/* Content */}
       <div className="relative z-10 flex flex-col gap-4 h-full p-5">
         {/* Header */}
         <div className="flex items-start justify-between gap-3">
-          <div className="w-12 h-12 rounded-xl overflow-hidden bg-muted/50 border border-border/50 flex-shrink-0 flex items-center justify-center">
-            <Image
-              src={project.logo}
-              alt={project.name}
-              width={40}
-              height={40}
-              className="object-contain"
-              style={{ width: "auto", height: "auto", maxWidth: 40, maxHeight: 40 }}
-            />
+          {/* Logo / icon */}
+          <div
+            className="w-12 h-12 rounded-xl overflow-hidden flex-shrink-0 flex items-center justify-center relative"
+            style={isRestricted ? {
+              background: "rgba(255,51,51,0.08)",
+              border: "1px solid rgba(255,51,51,0.4)",
+            } : undefined}
+          >
+            {isRestricted ? (
+              <motion.span
+                className="text-xl"
+                style={{ color: R }}
+                animate={{ opacity: [1, 0.4, 1] }}
+                transition={{ duration: 1.6, repeat: Infinity }}
+              >
+                ⛔
+              </motion.span>
+            ) : project.logo ? (
+              <Image src={project.logo} alt={project.name} fill sizes="48px" className="object-contain p-1" />
+            ) : (
+              <span className="text-lg font-bold font-mono text-muted-foreground">
+                {project.name.charAt(0)}
+              </span>
+            )}
           </div>
 
+          {/* Type badges */}
           <div className="flex flex-wrap gap-1.5 justify-end">
             {project.type.map((t) => (
-              <span
-                key={t}
-                className={`text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full border ${typeColors[t] ?? "bg-muted text-muted-foreground border-border"}`}
-              >
-                {t}
-              </span>
+              isRestricted ? (
+                <span
+                  key={t}
+                  className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full border"
+                  style={{ background: "rgba(255,51,51,0.1)", color: R, borderColor: "rgba(255,51,51,0.35)" }}
+                >
+                  {t}
+                </span>
+              ) : (
+                <span
+                  key={t}
+                  className={`text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full border ${typeColors[t] ?? "bg-muted text-muted-foreground border-border"}`}
+                >
+                  {t}
+                </span>
+              )
             ))}
           </div>
         </div>
 
+        {/* Restricted alert banner */}
+        {isRestricted && (
+          <motion.div
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg font-mono text-[11px]"
+            style={{
+              background: "rgba(255,51,51,0.08)",
+              border: "1px solid rgba(255,51,51,0.3)",
+              color: R,
+            }}
+            animate={{ opacity: [1, 0.6, 1] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            <span>⚠</span>
+            <span>CLASSIFIED — RESTRICTED ACCESS</span>
+          </motion.div>
+        )}
+
         {/* Name */}
-        <h3 className="font-semibold text-base leading-snug group-hover:text-accent transition-colors duration-300">
-          {project.name}
+        <h3
+          className="font-semibold text-base leading-snug transition-colors duration-300"
+          style={isRestricted ? { color: R } : undefined}
+        >
+          {!isRestricted && <span className="group-hover:text-accent transition-colors duration-300">{project.name}</span>}
+          {isRestricted && project.name}
         </h3>
 
         {/* Tech tags */}
@@ -299,21 +387,33 @@ export default function ProjectCard({ project, index, onOpen, layoutId }: Projec
             {project.technologies.slice(0, 4).map((tech) => (
               <span
                 key={tech}
-                className="text-[10px] px-2 py-0.5 rounded-md bg-muted/60 text-muted-foreground font-mono"
+                className={`text-[10px] px-2 py-0.5 rounded-md font-mono ${!isRestricted ? "bg-muted/60 text-muted-foreground" : ""}`}
+                style={isRestricted ? {
+                  background: "rgba(255,51,51,0.08)",
+                  color: "rgba(255,100,100,0.9)",
+                  border: "1px solid rgba(255,51,51,0.2)",
+                } : undefined}
               >
                 {tech}
               </span>
             ))}
             {project.technologies.length > 4 && (
-              <span className="text-[10px] px-2 py-0.5 rounded-md bg-muted/60 text-muted-foreground font-mono">
+              <span
+                className={`text-[10px] px-2 py-0.5 rounded-md font-mono ${!isRestricted ? "bg-muted/60 text-muted-foreground" : ""}`}
+                style={isRestricted ? {
+                  background: "rgba(255,51,51,0.08)",
+                  color: "rgba(255,100,100,0.9)",
+                  border: "1px solid rgba(255,51,51,0.2)",
+                } : undefined}
+              >
                 +{project.technologies.length - 4}
               </span>
             )}
           </div>
         )}
 
-        {/* Link */}
-        {project.link && (
+        {/* Link — non-restricted only */}
+        {!isRestricted && project.link && (
           <a
             href={project.link}
             target="_blank"

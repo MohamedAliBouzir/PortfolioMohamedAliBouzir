@@ -286,14 +286,14 @@
     background: rgba(238, 242, 235, 0.6);
     backdrop-filter: blur(12px) saturate(1.4);
     -webkit-backdrop-filter: blur(12px) saturate(1.4);
-    border: 1px solid rgba(5, 150, 105, 0.18);
+    border: 1px solid rgba(5, 150, 105, 0.06);
   }
 
   .dark .glass {
     background: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(12px) saturate(1.4);
     -webkit-backdrop-filter: blur(12px) saturate(1.4);
-    border: 1px solid rgba(0, 255, 65, 0.2);
+    border: 1px solid rgba(0, 255, 65, 0.06);
   }
 
   .glass-strong {

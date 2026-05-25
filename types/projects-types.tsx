@@ -5,7 +5,8 @@ export type TProjects = {
   name: string;
   link: string | null;
   type: string[] | null;
-  logo: StaticImageData;
+  logo: StaticImageData | null;
   description: string;
   technologies: string[];
+  restricted?: boolean;
 };

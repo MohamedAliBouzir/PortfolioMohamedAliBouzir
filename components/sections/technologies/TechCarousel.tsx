@@ -128,6 +128,7 @@ export default function TechCarousel({ items }: Props) {
                     src={tech.Icon}
                     alt={tech.Title}
                     fill
+                    sizes="40px"
                     className="object-contain"
                     style={{
                       /* dark mode: dim invisible logos to green, others grayscale at rest → color on hover */

@@ -52,16 +52,16 @@ const Experiences = () => {
               <AccordionItem value={`item-${data.id}`} className="border-b border-border/50">
                 <AccordionTrigger className="hover:no-underline py-4 sm:py-6 px-3 sm:px-6 rounded-lg hover:bg-accent/5 transition-colors">
                   <div className="flex flex-row gap-3 sm:gap-5 items-center w-full text-left">
-                    <div className="flex-shrink-0">
+                    <div className="flex-shrink-0 relative w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden">
                       {data.logo && (
                         <Image
                           src={data.logo}
                           priority
                           quality={100}
-                          width={56}
-                          height={56}
+                          fill
+                          sizes="(max-width: 640px) 48px, 56px"
                           alt={data.societeName}
-                          className="rounded-full w-12 h-12 sm:w-14 sm:h-14 object-cover"
+                          className="object-cover"
                         />
                       )}
                     </div>

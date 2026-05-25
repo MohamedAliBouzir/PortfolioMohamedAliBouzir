@@ -159,7 +159,7 @@ function ModalInner({ tech, ip, onClose }: { tech: ITechnologiesInterface; ip: s
           <Image
             src={tech.Icon} alt={tech.Title}
             width={16} height={16}
-            style={{ filter: "brightness(0) saturate(100%) invert(52%) sepia(98%) saturate(420%) hue-rotate(90deg) brightness(1.1)", opacity: 0.7 }}
+            style={{ width: 16, height: 16, filter: "brightness(0) saturate(100%) invert(52%) sepia(98%) saturate(420%) hue-rotate(90deg) brightness(1.1)", opacity: 0.7 }}
           />
         </div>
 

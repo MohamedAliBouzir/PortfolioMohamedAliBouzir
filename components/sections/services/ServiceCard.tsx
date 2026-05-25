@@ -30,13 +30,13 @@ export default function ServiceCard({ service, index }: ServiceCardProps) {
       </div>
 
       <div className="relative z-10 flex flex-col gap-4">
-        <div className="w-12 h-12 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center overflow-hidden">
+        <div className="w-12 h-12 rounded-xl bg-accent/10 border border-accent/20 flex items-center justify-center overflow-hidden relative">
           <Image
             src={service.Icon}
             alt={service.Title}
-            width={32}
-            height={32}
-            className="object-contain"
+            fill
+            sizes="32px"
+            className="object-contain p-2"
           />
         </div>
 

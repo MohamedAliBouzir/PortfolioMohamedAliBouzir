@@ -9,6 +9,16 @@ import Expert from "@/assets/images/jpg/expert.png"
 import D2M from "@/assets/images/jpg/D2M.png"
 export const projectsData = [
   {
+    id: 0,
+    name: "Classified National Project",
+    link: null,
+    type: ["web", "mobile", "pwa", "cli", "desktop"],
+    logo: null,
+    restricted: true,
+    description: "Restricted under national confidentiality directives. Sole architect and lead engineer of a high-concurrency, enterprise-grade distributed platform. Engineered a 4-layer data integrity model combining idempotency guards, distributed Redis locks, optimistic concurrency versioning, and atomic SQL constraints. Designed a multi-tenant PostgreSQL isolation layer with a schema-per-tenant strategy and a zero-trust authentication system using opaque Redis session tokens with HttpOnly/Secure cookies. Built an asynchronous event pipeline via BullMQ decoupling all side-effects from the critical request path. Real-time risk exposure enforced via atomic Lua scripts in Redis. Led cross-functional teams enforcing strict DTO-only module boundaries and ADR-driven architectural governance.",
+    technologies: ["NestJS", "Next.js", "Flutter", "PostgreSQL", "Redis", "Prisma", "BullMQ", "Docker", "CI/CD", "TypeScript"],
+  },
+  {
     id: 1,
     name: "IEEE ISSATSo SB Web Site",
     link: "https://issatso.ieee.tn/",
@@ -32,8 +42,8 @@ export const projectsData = [
     link: null,
     type: ["mobile"],
     logo: Fermli,
-    description: "A mobile application designed to connect local farmers with buyers, enabling real-time product listings, order management, and direct communication. Built with a focus on offline-first capability and low-bandwidth environments.",
-    technologies: ["React Native", "TypeScript", "REST API", "AsyncStorage"],
+    description: "Family healthcare and medical inventory tracker. Engineered dynamic dosage synchronization calendars and background tracking loops that fire local push alarms when medication supplies hit critical thresholds. Designed to keep the whole family's health schedule under one unified dashboard.",
+    technologies: ["React Native", "Firebase", "Local Notifications", "TypeScript"],
   },
   {
     id: 4,
@@ -88,6 +98,24 @@ export const projectsData = [
     logo: Effia,
     description: "High-traffic parking management platform serving 1000+ active users with real-time space reservations, online payments, and live availability tracking. Built a fully responsive React frontend backed by a scalable Express/Node.js API with MySQL, Socket.io for real-time updates, and Redux for state management.",
     technologies: ["React", "TypeScript", "Material-UI", "Redux", "Socket.io", "Express.js", "Node.js", "MySQL", "Lodash"],
+  },
+  {
+    id: 11,
+    name: "Palmyra",
+    link: null,
+    type: ["web"],
+    logo: null,
+    description: "Netflix-inspired educational streaming platform for kids. Built a robust parent-child relational schema allowing one parent account to manage 4 strictly isolated, stateful child viewing sessions. Integrated interactive quizzes directly into the video streaming state. Deployed on a self-hosted VPS with a full CI/CD pipeline.",
+    technologies: ["NestJS", "Next.js", "PostgreSQL", "TanStack Query", "Framer Motion", "Docker", "CI/CD"],
+  },
+  {
+    id: 12,
+    name: "InStock ERP",
+    link: null,
+    type: ["web"],
+    logo: null,
+    description: "Dynamic B2C e-commerce engine and CMS dashboard. Engineered a recursive relational catalog schema in PostgreSQL enabling unlimited nested category depth. Leveraged Zustand for high-performance state management, allowing admins to dynamically generate and reorder frontend web content layout slots without any code changes.",
+    technologies: ["NestJS", "Next.js", "PostgreSQL", "Zustand", "Tailwind CSS"],
   },
   {
     id: 10,
