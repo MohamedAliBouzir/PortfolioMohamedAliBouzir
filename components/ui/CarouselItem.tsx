@@ -14,15 +14,17 @@ export const CarouselItem = ({ data }: { data: TProjects }) => {
         {data.name}
       </div>
       <div className="relative w-full h-45">
-        <Image
-          src={data.logo}
-          priority
-          quality={100}
-          fill
-          alt={data.name}
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className="object-contain filter"
-        />
+        {data.logo && (
+          <Image
+            src={data.logo}
+            priority
+            quality={100}
+            fill
+            alt={data.name}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-contain filter"
+          />
+        )}
       </div>
     </div>
     </HoverScale>
