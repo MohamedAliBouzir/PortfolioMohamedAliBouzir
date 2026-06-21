@@ -43,7 +43,7 @@ const typeColors: Record<string, string> = {
 };
 
 /* ── line type ───────────────────────────────────────────────────── */
-type TLine = { text: string; color: string };
+type TLine = { text: string; color: string; isAscii?: boolean };
 
 function makeTokens(restricted: boolean) {
   const G  = restricted ? RED     : GREEN;
@@ -66,12 +66,12 @@ function bootScript(project: Project, ip: string): TLine[] {
     ? [
         { text: `ROOT@${ip}:~# ACCESS LEVEL: TOP SECRET`, color: RED },
         e(),
-        { text: "  ██████╗ ███████╗███████╗████████╗██████╗ ", color: RED_DIM },
-        { text: "  ██╔══██╗██╔════╝██╔════╝╚══██╔══╝██╔══██╗", color: RED_DIM },
-        { text: "  ██████╔╝█████╗  ███████╗   ██║   ██████╔╝", color: RED_MID },
-        { text: "  ██╔══██╗██╔══╝  ╚════██║   ██║   ██╔══██╗", color: RED_MID },
-        { text: "  ██║  ██║███████╗███████║   ██║   ██║  ██║", color: RED },
-        { text: "  ╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝   ╚═╝  ╚═╝", color: RED },
+        { text: "  ██████╗ ███████╗███████╗████████╗██████╗ ██╗ ██████╗████████╗███████╗██████╗ ", color: RED_DIM, isAscii: true },
+        { text: "  ██╔══██╗██╔════╝██╔════╝╚══██╔══╝██╔══██╗██║██╔════╝╚══██╔══╝██╔════╝██╔══██╗", color: RED_DIM, isAscii: true },
+        { text: "  ██████╔╝█████╗  ███████╗   ██║   ██████╔╝██║██║        ██║   █████╗  ██║  ██║", color: RED_MID, isAscii: true },
+        { text: "  ██╔══██╗██╔══╝  ╚════██║   ██║   ██╔══██╗██║██║        ██║   ██╔══╝  ██║  ██║", color: RED_MID, isAscii: true },
+        { text: "  ██║  ██║███████╗███████║   ██║   ██║  ██║██║╚██████╗   ██║   ███████╗██████╔╝", color: RED, isAscii: true },
+        { text: "  ╚═╝  ╚═╝╚══════╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝ ╚═════╝   ╚═╝   ╚══════╝╚═════╝ ", color: RED, isAscii: true },
         e(),
         { text: "  [!] CLASSIFIED — NATIONAL CONFIDENTIALITY DIRECTIVE", color: RED },
         { text: "  [!] Unauthorized access is a criminal offense.", color: RED_DIM },
@@ -141,8 +141,8 @@ function techScript(project: Project, ip: string): TLine[] {
 }
 
 /* ── TypeLine — types once, then stays ──────────────────────────── */
-function TypeLine({ text, color, speed = 13, onDone }: {
-  text: string; color: string; speed?: number; onDone: () => void;
+function TypeLine({ text, color, speed = 13, isAscii, onDone }: {
+  text: string; color: string; speed?: number; isAscii?: boolean; onDone: () => void;
 }) {
   const [out, setOut] = useState("");
   const [done, setDone] = useState(false);
@@ -159,9 +159,19 @@ function TypeLine({ text, color, speed = 13, onDone }: {
   }, []);
   useEffect(() => { if (done) onDone(); }, [done, onDone]);
   return (
-    <div style={{ color, fontFamily: "monospace", fontSize: 13, lineHeight: 1.8, whiteSpace: "pre-wrap", minHeight: "1.6em" }}>
+    <div
+      className={isAscii ? "ascii-art-line" : ""}
+      style={{
+        color,
+        fontFamily: "monospace",
+        fontSize: 13,
+        lineHeight: 1.8,
+        whiteSpace: isAscii ? "pre" : "pre-wrap",
+        minHeight: "1.6em"
+      }}
+    >
       {out}
-      {!done && <span className="inline-block w-[7px] h-[13px] ml-0.5 align-middle animate-pulse" style={{ background: GREEN }} />}
+      {!done && <span className="inline-block w-[7px] h-[13px] ml-0.5 align-middle animate-pulse" style={{ background: color }} />}
     </div>
   );
 }
@@ -169,7 +179,17 @@ function TypeLine({ text, color, speed = 13, onDone }: {
 /* ── StaticLine ──────────────────────────────────────────────────── */
 function StaticLine({ line }: { line: TLine }) {
   return (
-    <div style={{ color: line.color, fontFamily: "monospace", fontSize: 13, lineHeight: 1.8, whiteSpace: "pre-wrap", minHeight: "1.6em" }}>
+    <div
+      className={line.isAscii ? "ascii-art-line" : ""}
+      style={{
+        color: line.color,
+        fontFamily: "monospace",
+        fontSize: 13,
+        lineHeight: 1.8,
+        whiteSpace: line.isAscii ? "pre" : "pre-wrap",
+        minHeight: "1.6em"
+      }}
+    >
       {line.text}
     </div>
   );
@@ -227,6 +247,7 @@ function LineStream({
           key={`${tabKey}-${cursor}`}
           text={currentLine.text}
           color={currentLine.color}
+          isAscii={currentLine.isAscii}
           onDone={advance}
         />
       )}
@@ -317,7 +338,7 @@ function BrowserWindow({
       )}
 
       {/* Chrome bar */}
-      <div className="relative z-10 flex-shrink-0 flex items-center gap-2 px-3 py-[7px] border-b"
+      <div className="relative z-20 flex-shrink-0 flex items-center gap-2 px-3 py-[7px] border-b"
         style={{ background: chromeBg, borderColor: chromeBd }}>
         <div className="flex gap-1.5 flex-shrink-0">
           <div className="w-2.5 h-2.5 rounded-full" style={{ background: isRestricted ? "#ff3333" : "#ff5f57" }} />
@@ -325,20 +346,22 @@ function BrowserWindow({
           <div className="w-2.5 h-2.5 rounded-full" style={{ background: isRestricted ? "#220000" : "#28c840" }} />
         </div>
 
-        <div className="relative flex-1">
+        <div className="relative flex-1 min-w-0">
           <button
             className="w-full flex items-center gap-1 rounded-md px-3 py-[3px] text-[11px] font-mono text-left"
             style={{ background: urlBg, border: `1px solid ${urlBd}`, cursor: "none" }}
             onClick={() => setDropOpen((v) => !v)}
           >
-            {isRestricted
-              ? <span style={{ color: RED }}>⚠ CLASSIFIED://</span>
-              : <span style={{ color: accent }}>http://</span>
-            }
-            <span style={{ color: urlText }}>{isRestricted ? "restricted.gov/" : "localhost:3000/"}</span>
-            <span style={{ color: pathColor }}>{slug}</span>
-            <span style={{ color: pathColor }}>{paths.find((p) => p.key === activeTab)?.path}</span>
-            <span className="ml-auto" style={{ color: urlText }}>▾</span>
+            <div className="flex-1 min-w-0 flex items-center gap-0.5 overflow-hidden whitespace-nowrap text-ellipsis">
+              {isRestricted
+                ? <span style={{ color: RED, flexShrink: 0 }}>⚠ CLASSIFIED://</span>
+                : <span style={{ color: accent, flexShrink: 0 }}>http://</span>
+              }
+              <span style={{ color: urlText, flexShrink: 0 }}>{isRestricted ? "restricted.gov/" : "localhost:3000/"}</span>
+              <span className="truncate" style={{ color: pathColor }}>{slug}</span>
+              <span style={{ color: pathColor, flexShrink: 0 }}>{paths.find((p) => p.key === activeTab)?.path}</span>
+            </div>
+            <span className="ml-auto flex-shrink-0" style={{ color: urlText }}>▾</span>
           </button>
 
           <AnimatePresence>
@@ -368,12 +391,23 @@ function BrowserWindow({
                       }}
                       onClick={() => { if (unlocked) { onNavSelect(key); setDropOpen(false); } }}
                     >
-                      <span style={{ color: unlocked ? (active ? accent : RED_DIM) : "#220000" }}>
+                      <span className="flex-shrink-0" style={{ color: unlocked ? (active ? accent : RED_DIM) : "#220000" }}>
                         {unlocked ? "●" : "○"}
                       </span>
-                      <span style={{ color: urlText }}>{isRestricted ? "restricted.gov/" : `localhost:3000/${slug}`}</span>
-                      <span style={{ color: !unlocked ? "#220000" : active ? accent : pathColor }}>{path}</span>
-                      {!unlocked && <span className="ml-auto text-[10px]" style={{ color: "#440000" }}>locked</span>}
+                      <div className="flex-1 min-w-0 flex items-center gap-0.5 overflow-hidden whitespace-nowrap text-ellipsis">
+                        <span style={{ color: urlText, flexShrink: 0 }}>
+                          {isRestricted ? "restricted.gov/" : "localhost:3000/"}
+                        </span>
+                        {!isRestricted && (
+                          <span className="truncate" style={{ color: pathColor }}>
+                            {slug}
+                          </span>
+                        )}
+                        <span style={{ color: !unlocked ? "#220000" : active ? accent : pathColor, flexShrink: 0 }}>
+                          {path}
+                        </span>
+                      </div>
+                      {!unlocked && <span className="ml-auto text-[10px] flex-shrink-0" style={{ color: "#440000" }}>locked</span>}
                     </button>
                   );
                 })}
@@ -614,6 +648,22 @@ function ModalInner({ project, onClose, layoutId }: {
 }) {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
+  const isRestricted = !!project.restricted;
+  const ACC = isRestricted ? RED : GREEN;
+
+  const iconColor = isRestricted ? RED : (isDark ? GREEN : "#059669");
+  const iconBg = isRestricted
+    ? (isDark ? "rgba(255,51,51,0.07)" : "rgba(204,34,34,0.09)")
+    : (isDark ? "rgba(0,255,65,0.07)" : "rgba(5,150,105,0.09)");
+  const iconBorder = `1px solid ${isRestricted
+    ? (isDark ? `${RED}30` : "rgba(204,34,34,0.3)")
+    : (isDark ? `${GREEN}30` : "rgba(5,150,105,0.3)")}`;
+  const iconBoxShadow = isDark
+    ? [`0 0 24px -8px ${ACC}30`, `0 0 40px -4px ${ACC}50`, `0 0 24px -8px ${ACC}30`]
+    : isRestricted
+      ? [`0 0 24px -8px rgba(204,34,34,0.15)`, `0 0 40px -4px rgba(204,34,34,0.3)`, `0 0 24px -8px rgba(204,34,34,0.15)`]
+      : [`0 0 24px -8px rgba(5,150,105,0.15)`, `0 0 40px -4px rgba(5,150,105,0.3)`, `0 0 24px -8px rgba(5,150,105,0.15)`];
+
   const [stage,     setStage]     = useState<Stage>("desktop");
   const [activeTab, setActiveTab] = useState<TabKey>("general");
   const [ip, setIp] = useState("127.0.0.1");
@@ -668,6 +718,9 @@ function ModalInner({ project, onClose, layoutId }: {
       onClick={onClose}
     >
       <style>{`
+        .ascii-art-line {
+          font-size: clamp(6px, 1.8vw, 13px) !important;
+        }
         @media(min-width:1024px){
           .project-modal-shell { flex: none !important; height: 720px !important; border-radius: 14px !important; }
         }
@@ -706,8 +759,8 @@ function ModalInner({ project, onClose, layoutId }: {
             width: "100%",
             maxWidth: 1100,
             borderRadius: "14px 14px 0 0",
-            border: "1px solid rgba(0,255,65,0.15)",
-            boxShadow: `0 0 100px -20px ${GREEN}40`,
+            border: `1px solid ${isRestricted ? "rgba(255,51,51,0.15)" : "rgba(0,255,65,0.15)"}`,
+            boxShadow: `0 0 100px -20px ${ACC}40`,
           }}
           /* desktop: inline style overridden by scoped CSS below */
         initial={{ scale: 0.94, opacity: 0 }}
@@ -745,19 +798,16 @@ function ModalInner({ project, onClose, layoutId }: {
                 <motion.div
                   className="w-16 h-16 rounded-2xl flex items-center justify-center font-mono text-2xl"
                   style={{
-                    background: isDark ? "rgba(0,255,65,0.07)" : "rgba(5,150,105,0.09)",
-                    border: `1px solid ${isDark ? `${GREEN}30` : "rgba(5,150,105,0.3)"}`,
+                    background: iconBg,
+                    border: iconBorder,
                   }}
-                  animate={{ boxShadow: isDark
-                    ? [`0 0 24px -8px ${GREEN}30`, `0 0 40px -4px ${GREEN}50`, `0 0 24px -8px ${GREEN}30`]
-                    : [`0 0 24px -8px rgba(5,150,105,0.15)`, `0 0 40px -4px rgba(5,150,105,0.3)`, `0 0 24px -8px rgba(5,150,105,0.15)`]
-                  }}
+                  animate={{ boxShadow: iconBoxShadow }}
                   transition={{ duration: 2.5, repeat: Infinity }}
                 >
-                  <span style={{ color: isDark ? GREEN : "#059669" }}>$_</span>
+                  <span style={{ color: iconColor }}>$_</span>
                 </motion.div>
                 <span className="font-mono text-[11px] text-center leading-tight"
-                  style={{ color: isDark ? GREEN : "#059669" }}>Terminal</span>
+                  style={{ color: iconColor }}>Terminal</span>
               </motion.div>
             </motion.div>
           )}
@@ -777,7 +827,7 @@ function ModalInner({ project, onClose, layoutId }: {
             >
               {/* Boot terminal chrome */}
               <div className="flex-shrink-0 flex items-center gap-2 px-3 py-[7px] border-b"
-                style={{ background: "#0d0d0d", borderColor: `${GREEN}15` }}>
+                style={{ background: "#0d0d0d", borderColor: `${ACC}15` }}>
                 <div className="flex gap-1.5">
                   <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f57]" />
                   <div className="w-2.5 h-2.5 rounded-full bg-[#febc2e]" />
@@ -802,6 +852,7 @@ function ModalInner({ project, onClose, layoutId }: {
                   <NextBtn
                     label="Launch browser"
                     onClick={() => { setStage("general"); }}
+                    restricted={!!project.restricted}
                   />
                 )}
               </div>
@@ -830,6 +881,7 @@ function ModalInner({ project, onClose, layoutId }: {
             {/* Browser */}
             <motion.div
               className="modal-browser p-2"
+              style={{ zIndex: 30 }}
               initial={{ y: -40, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -865,7 +917,7 @@ function ModalInner({ project, onClose, layoutId }: {
 
         {/* Border overlay */}
         <div className="absolute inset-0 rounded-[14px] pointer-events-none"
-          style={{ border: "1px solid rgba(0,255,65,0.1)" }} />
+          style={{ border: `1px solid ${isRestricted ? "rgba(255,51,51,0.15)" : "rgba(0,255,65,0.1)"}` }} />
       </motion.div>
     </motion.div>
   );

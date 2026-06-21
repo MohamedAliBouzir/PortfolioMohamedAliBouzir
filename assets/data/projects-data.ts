@@ -7,6 +7,8 @@ import Elissabet from "@/assets/images/jpg/elissabet.jpg"
 import Effia from "@/assets/images/jpg/Effia.png"
 import Expert from "@/assets/images/jpg/expert.png"
 import D2M from "@/assets/images/jpg/D2M.png"
+import PalmyraLogo from "@/assets/images/svg/palmyra-logo.svg";
+import Smoft from "@/assets/images/jpg/societies/smoft.jpg";
 export const projectsData = [
   {
     id: 0,
@@ -104,18 +106,18 @@ export const projectsData = [
     name: "Palmyra",
     link: null,
     type: ["web"],
-    logo: null,
+    logo: PalmyraLogo,
     description: "Netflix-inspired educational streaming platform for kids. Built a robust parent-child relational schema allowing one parent account to manage 4 strictly isolated, stateful child viewing sessions. Integrated interactive quizzes directly into the video streaming state. Deployed on a self-hosted VPS with a full CI/CD pipeline.",
     technologies: ["NestJS", "Next.js", "PostgreSQL", "TanStack Query", "Framer Motion", "Docker", "CI/CD"],
   },
   {
     id: 12,
-    name: "InStock ERP",
+    name: "SMOFT ERP",
     link: null,
     type: ["web"],
-    logo: null,
-    description: "Dynamic B2C e-commerce engine and CMS dashboard. Engineered a recursive relational catalog schema in PostgreSQL enabling unlimited nested category depth. Leveraged Zustand for high-performance state management, allowing admins to dynamically generate and reorder frontend web content layout slots without any code changes.",
-    technologies: ["NestJS", "Next.js", "PostgreSQL", "Zustand", "Tailwind CSS"],
+    logo: Smoft,
+    description: "Enterprise Resource Planning (ERP) platform. Successfully architected, tested, and shipped core modules, CMS utilities, and dashboard components. Established direct real-time data synchronization frameworks with the centralized ERP backend and refactored client-side data querying for enhanced performance.",
+    technologies: ["HTML", "CSS", "JavaScript", "jQuery", "PHP", "MySQL"],
   },
   {
     id: 10,

@@ -37,6 +37,10 @@ const typeColors: Record<string, string> = {
 const PALETTE_DARK  = ["#00FF41", "#00e039", "#00c231", "#39ff14", "#00FF7F", "#7fff7f"];
 const PALETTE_LIGHT = ["#059669", "#047857", "#065f46", "#10b981", "#34d399", "#6ee7b7"];
 
+/* restricted palettes */
+const PALETTE_RED_DARK  = ["#ff3333", "#ff5555", "#cc2222", "#ff0000", "#ff7777", "#ff9999"];
+const PALETTE_RED_LIGHT = ["#cc2222", "#dd3333", "#aa1111", "#ff5555", "#ff6666", "#ff8888"];
+
 /* trail-fade fill: black for dark, card bg for light */
 const TRAIL_FILL_DARK  = "rgba(0,0,0,0.18)";
 const TRAIL_FILL_LIGHT = "rgba(238,242,235,0.22)";
@@ -130,7 +134,10 @@ export default function ProjectCard({ project, index, onOpen, layoutId }: Projec
 
     const tick = () => {
       const isDark = isDarkRef.current;
-      const pal    = isDark ? PALETTE_DARK : PALETTE_LIGHT;
+      const isRestricted = project.restricted === true;
+      const pal = isRestricted
+        ? (isDark ? PALETTE_RED_DARK : PALETTE_RED_LIGHT)
+        : (isDark ? PALETTE_DARK : PALETTE_LIGHT);
       const currentOpacity = opacityRef.current.get();
 
       /* clear every frame so the canvas never drifts toward black.
@@ -200,7 +207,9 @@ export default function ProjectCard({ project, index, onOpen, layoutId }: Projec
       });
 
       /* scanlines */
-      const scanR = isDark ? "0,255,65" : "5,150,105";
+      const scanR = isRestricted
+        ? "255,51,51"
+        : (isDark ? "0,255,65" : "5,150,105");
       ctx.fillStyle = `rgba(${scanR},${0.012 * currentOpacity})`;
       for (let y = 0; y < h; y += 3) ctx.fillRect(0, y, w, 1);
 
@@ -250,57 +259,25 @@ export default function ProjectCard({ project, index, onOpen, layoutId }: Projec
       onMouseLeave={handleLeave}
       className="group relative glass rounded-2xl overflow-hidden cursor-none h-full"
       style={isRestricted ? {
-        border: "1px solid rgba(255,51,51,0.5)",
-        boxShadow: "0 0 24px -6px rgba(255,51,51,0.35)",
+        borderColor: "rgba(255,51,51,0.25)",
       } : undefined}
     >
-      {/* Restricted: pulsing red border glow */}
-      {isRestricted && (
-        <motion.div
-          className="absolute inset-0 rounded-2xl pointer-events-none"
-          animate={{ boxShadow: [
-            "0 0 18px -6px rgba(255,51,51,0.3)",
-            "0 0 36px -2px rgba(255,51,51,0.6)",
-            "0 0 18px -6px rgba(255,51,51,0.3)",
-          ]}}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        />
-      )}
+      {/* Space canvas */}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full rounded-2xl pointer-events-none"
+      />
 
-      {/* Restricted: red scanline overlay */}
-      {isRestricted && (
-        <div
-          className="absolute inset-0 pointer-events-none rounded-2xl"
-          style={{
-            background: "repeating-linear-gradient(0deg, rgba(255,51,51,0.03) 0px, rgba(255,51,51,0.03) 1px, transparent 1px, transparent 3px)",
-          }}
-        />
-      )}
-
-      {/* Space canvas — only for non-restricted */}
-      {!isRestricted && (
-        <canvas
-          ref={canvasRef}
-          className="absolute inset-0 w-full h-full rounded-2xl pointer-events-none"
-        />
-      )}
-
-      {/* Restricted: dark red bg tint */}
-      {isRestricted && (
-        <div className="absolute inset-0 rounded-2xl pointer-events-none"
-          style={{ background: "rgba(255,20,20,0.04)" }} />
-      )}
-
-      {/* Border glow — non-restricted only */}
-      {!isRestricted && (
-        <motion.div
-          className="absolute inset-0 rounded-2xl pointer-events-none"
-          style={{
-            boxShadow: "inset 0 0 0 1px var(--glow-color)",
-            opacity: mounted ? opacity : 0
-          }}
-        />
-      )}
+      {/* Border glow */}
+      <motion.div
+        className="absolute inset-0 rounded-2xl pointer-events-none"
+        style={{
+          boxShadow: isRestricted
+            ? "inset 0 0 0 1px rgba(255,51,51,0.4)"
+            : "inset 0 0 0 1px var(--glow-color)",
+          opacity: mounted ? opacity : 0
+        }}
+      />
 
       {/* Content */}
       <div className="relative z-10 flex flex-col gap-4 h-full p-5">
@@ -355,22 +332,7 @@ export default function ProjectCard({ project, index, onOpen, layoutId }: Projec
           </div>
         </div>
 
-        {/* Restricted alert banner */}
-        {isRestricted && (
-          <motion.div
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg font-mono text-[11px]"
-            style={{
-              background: "rgba(255,51,51,0.08)",
-              border: "1px solid rgba(255,51,51,0.3)",
-              color: R,
-            }}
-            animate={{ opacity: [1, 0.6, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            <span>⚠</span>
-            <span>CLASSIFIED — RESTRICTED ACCESS</span>
-          </motion.div>
-        )}
+
 
         {/* Name */}
         <h3

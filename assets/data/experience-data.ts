@@ -6,11 +6,12 @@ import Bill from "@/assets/images/jpg/societies/D2M.png";
 import SkillWare from "@/assets/images/jpg/societies/skillware.jpeg";
 import Digital from "@/assets/images/jpg/societies/digitalmarket.jpeg";
 import Codetime from "@/assets/images/jpg/societies/codetime.jpg";
+import MayraLogo from "@/assets/images/jpg/societies/mayra logo.png";
 
 export const experienceData: IExperiencesInterface[] = [
   {
     id: 0,
-    logo: null,
+    logo: MayraLogo,
     societeName: "MAYRA Entertainment",
     type: "Contract",
     presence: "On-site",
