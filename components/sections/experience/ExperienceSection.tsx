@@ -2,6 +2,7 @@ import { Suspense, lazy } from "react";
 import SectionWrapper from "@/components/common/SectionWrapper";
 import SectionHeader from "@/components/common/SectionHeader";
 import SectionSkeleton from "@/components/common/SectionSkeleton";
+import ContributionCalendar from "./ContributionCalendar";
 
 const ExperienceTimeline = lazy(() => import("./ExperienceTimeline"));
 
@@ -23,6 +24,7 @@ export default function ExperienceSection() {
         <Suspense fallback={<SectionSkeleton rows={4} />}>
           <ExperienceTimeline />
         </Suspense>
+        <ContributionCalendar />
       </div>
     </SectionWrapper>
   );
