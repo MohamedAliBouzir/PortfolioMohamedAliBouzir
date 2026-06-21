@@ -153,7 +153,7 @@ export default function ContributionCalendar() {
       {/* Main Heatmap Container */}
       <div className="w-full overflow-hidden relative">
         <div className="overflow-x-auto pb-4 pt-6 scrollbar-none" style={{ scrollbarWidth: "none" }}>
-          <div className="min-w-[670px] relative flex">
+          <div className="min-w-[670px] w-fit mx-auto relative flex">
             
             {/* Weekday labels on the left */}
             <div className="flex flex-col justify-between text-[9px] font-mono text-muted-foreground w-8 h-[88px] pr-2 pt-[2px] select-none flex-shrink-0">
