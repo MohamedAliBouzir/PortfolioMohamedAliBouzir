@@ -380,6 +380,9 @@ export default function ProjectCard({ project, index, onOpen, layoutId }: Projec
             href={project.link}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
             className="mt-auto text-xs text-accent font-mono flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
           >
             View live <span>↗</span>
